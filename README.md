@@ -1,1 +1,1 @@
-# ivp-assignments
+# Image and Video Processing Assignments
