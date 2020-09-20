@@ -95,7 +95,7 @@ title('Negative of the Image');
 % Calling the dft_2d function.
 dft2d = dft_2d(cameraman);
 
-% Comparing the iamge, the 2D-DFT and the log transform of the 2D DFT.
+% Comparing the image, the 2D-DFT and the log transform of the 2D DFT.
 figure('Name', 'Computing the 2D-DFT of the image.');
 subplot(1,3,1);
 imshow(cameraman);
@@ -143,11 +143,31 @@ histeq_image = histogram_equalization(cameraman);
 % Calling the hist_2d function to get the histogram after equalization.
 hist_after = pixel_hist_2d(histeq_image);
 
-figure;
-plot(1:1:256, p);
+% Comparing the iamge, the 2D-DFT and the log transform of the 2D DFT.
+figure('Name', 'Computing the 2D-DFT of the image.');
+subplot(2,2,1);
+imshow(cameraman);
+title('Original Image');
 
+subplot(2,2,2);
+plot(0:1:255, hist_before, '-bo', 'MarkerSize', 2);
+title('Frequency Histogram before Equalization');
+xlabel('Pixel Bins');
+ylabel('Frequency');
+axis tight;
 
+subplot(2,2,3)
+imshow(histeq_image);
+title('Histogram Equalised Image');
 
-p = pixel_hist_2d(uint8(negative));
-figure;
-plot(1:1:256, p);
+subplot(2,2,4);
+plot(0:1:255, hist_after, '-bo', 'MarkerSize', 2);
+title('Frequency Histogram after Equalization');
+xlabel('Pixel Bins');
+ylabel('Frequency');
+axis tight;
+
+%% Refernces
+
+% 1. https://en.wikipedia.org/wiki/Histogram_equalization
+% 2. https://www.imageeprocessing.com/2013/05/converting-rgb-image-to-hsi.html
