@@ -1,7 +1,8 @@
 %% IVP Assignment 1
 
 % Name: Chanakya Ajit Ekbote
-% Institute: IIT, Bhubaneswar%DATE: 19.09.2020
+% Institute: IIT, Bhubaneswar
+% Date: 19.09.2020
 % Degree: Btech
 % Branch: Electronics and Communication
 % Roll Number: 17EC01041
@@ -11,6 +12,12 @@
 clc; 
 clear all;
 close all;
+
+%% Functions Created for the Assignment: rgb_to_grayscale
+% <include>rgb_to_grayscale.m</include>
+
+%% Functions Created for the Assignment: rgb_to_cmyk
+% <include>rgb_to_cmyk.m</include>
 
 %% Functions Created for the Assignment: rgb_to_hsi
 % <include>rgb_to_hsi.m</include>
@@ -38,7 +45,7 @@ close all;
 cameraman = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\cameraman.tif');
 lena_color = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\lena_color_256.tif');
 
-%% Question 1: Seperate an RGB image into its constituent colours and then convert the RGB to HSI format.
+%% Question 1: Seperate an RGB image into its constituent colours and then convert the image to other formats.
 
 % Decomposing the image to its constituent colors.
 red = lena_color(:,:,1);
@@ -63,6 +70,46 @@ subplot(2,2,4);
 imshow(green);
 title('Green Channel');
 
+% Converting the RGB image to Grayscale
+gray_scale_img = rgb_to_grayscale(lena_color);
+
+% Comparing the RGB image and the corresponding Greyscale image.
+figure('Name', 'Converting an RGB image to Grayscale');
+subplot(1,2,1);
+imshow(lena_color);
+title('Original Image');
+
+subplot(1,2,2);
+imshow(gray_scale_img);
+title('Gray Scale Image');
+
+% Converting the RGB image to CMYK
+cmyk_image = rgb_to_cmyk(lena_color);
+
+% Comparing the RGB image and the consituent CMYK image
+
+% Comparing the hue, saturation and intensity to the original image.
+figure('Name', 'Decomposing an RGB Image to CMYK');
+subplot(2,3,1);
+imshow(lena_color);
+title('Original Image');
+
+subplot(2,3,2);
+imshow(uint8(cmyk_image(:,:,1)));
+title('Cyan Channel');
+
+subplot(2,3,3);
+imshow(uint8(cmyk_image(:,:,2)));
+title('Magenta Channel');
+
+subplot(2,3,4);
+imshow(uint8(cmyk_image(:,:,3)));
+title('Yellow Channel');
+
+subplot(2,3,5);
+imshow(uint8(cmyk_image));
+title('Image using CMYK as RGB');
+
 % Calling the rgb_to_hsi function.
 [hue, sat, int] = rgb_to_hsi(double(red), double(green), double(blue), double(lena_color));
 
@@ -79,10 +126,6 @@ title('Hue Channel');
 subplot(2,3,3);
 imshow(uint8(100 * sat));
 title('Saturation Channel');
-
-subplot(2,3,4);
-imshow(uint8(int));
-title('Intensity Channel');
 
 subplot(2,3,4);
 imshow(uint8(int));
@@ -186,6 +229,31 @@ title('Frequency Histogram after Equalization');
 xlabel('Pixel Bins');
 ylabel('Frequency');
 axis tight;
+
+%% Conclusion
+% From the first question we can observe that images can be converted into
+% other formats which might make it easier to interpret them in certain 
+% occasion. For example: If we wanted to find the hue, or saturation we can
+% easily convert into the format we desire.
+% From the second question we can observe that the negative of an image can
+% be easily observed by just taking the additive inverse and adding the 
+% maximum pixel value to it. This transformation helps, when we want to 
+% highlight the dark components more.
+% From the third question we can observe that the magnitude of the 2D-DFT 
+% image is correlated to the edges of the image. Moreover, we can also
+% notice that the magnitude of the 2D-DFT has to be enhanced using the log
+% transform as the magnitude of the 2D-DFT is feeble and corresponds to low
+% pixel intensities.
+% From the fourth question we can observe that if the gamma value is
+% greater than 1, the image gets brighter and if its less than 1 the image
+% gets darker.
+% From the fifth question, we can observe the changes that take place when
+% histogram equalization is performed on an image. A darker image usually
+% gets brighter and a brighter image usually gets darker. Moroever on
+% comparing the pixel distribution histograms, we can observe that that the
+% histogram after equalization has a distribution similar to a uniform
+% distribution as compared to the histogram of the original pixel 
+% distribution.
 
 %% References
 
