@@ -21,14 +21,16 @@ function [histeqimage] = histogram_equalization(image)
     
     keys = sort(keys);
     sum = 0;
-    cdf_min = hist_map(keys(0));
+    cdf_min = hist_map(keys(char(1)));
     
-    for i=1:keys
+    [key_length, ~] = size(keys);
+    
+    for i=1:key_length
         sum = sum + hist_map(keys(i));
         cdf_map(keys(i)) = sum;
     end
     
-    for i=1:keys
+    for i=1:key_length
         hist_eq_map(keys(i)) = round((cdf_map(keys(i))-cdf_min)*255/(row*col-cdf_min));
     end
     
