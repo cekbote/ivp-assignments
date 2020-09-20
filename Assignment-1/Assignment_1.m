@@ -1,7 +1,10 @@
 %% IVP Assignment 1
 
-
-
+% Name: Chanakya Ajit Ekbote
+% Institute: IIT, Bhubaneswar%DATE: 19.09.2020
+% Degree: Btech
+% Branch: Electronics and Communication
+% Roll Number: 17EC01041
 
 %% Creating a new environment.
 
@@ -9,9 +12,26 @@ clc;
 clear all;
 close all;
 
-%% Functions Created for the Assignment
+%% Functions Created for the Assignment: rgb_to_hsi
+% <include>rgb_to_hsi.m</include>
 
+%% Functions Created for the Assignment: image_negative
+% <include>image_negative.m</include>
+
+%% Functions Created for the Assignment: dft_2d
+% <include>dft_2d.m</include>
+
+%% Functions Created for the Assignment: log_transform
 % <include>log_transform.m</include>
+
+%% Functions Created for the Assignment: gamma_transform
+% <include>gamma_transform.m</include>
+
+%% Functions Created for the Assignment: pixel_hist_2d
+% <include>pixel_hist_2d.m</include>
+
+%% Functions Created for the Assignment: histogram_equalization
+% <include>histogram_equalization.m</include>
 
 %% Image Imports
 
@@ -167,7 +187,7 @@ xlabel('Pixel Bins');
 ylabel('Frequency');
 axis tight;
 
-%% Refernces
+%% References
 
 % 1. https://en.wikipedia.org/wiki/Histogram_equalization
 % 2. https://www.imageeprocessing.com/2013/05/converting-rgb-image-to-hsi.html

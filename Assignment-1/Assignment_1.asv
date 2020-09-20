@@ -1,7 +1,10 @@
 %% IVP Assignment 1
 
-
-
+% Name: Chanakya Ajit Ekbote
+% Institute: IIT, Bhubaneswar%DATE: 19.09.2020
+% Degree: Btech
+% Branch: Electronics and Communication
+% Roll Number: 17EC01041
 
 %% Creating a new environment.
 
@@ -9,9 +12,21 @@ clc;
 clear all;
 close all;
 
-%% Functions Created for the Assignment
+%% Functions Created for the Assignment (rgb_to_hsi)
+% <include>rgb_to_hsi.m</include>
+
+%% asdsd
+% <include>image_negative.m</include>
+
+% <include>dft_2d.m</include>
 
 % <include>log_transform.m</include>
+
+% <include>gamma_transform.m</include>
+
+% <include>pixel_hist_2d.m</include>
+
+% <include>histogram_equalization.m</include>
 
 %% Image Imports
 
@@ -150,19 +165,24 @@ imshow(cameraman);
 title('Original Image');
 
 subplot(2,2,2);
-plot(0:1:255, hist_before);
-title('Frequency Hisogram');
-xlabel('
+plot(0:1:255, hist_before, '-bo', 'MarkerSize', 2);
+title('Frequency Histogram before Equalization');
+xlabel('Pixel Bins');
+ylabel('Frequency');
+axis tight;
 
 subplot(2,2,3)
-imshow(uint8(image_2));
-title('Gamma = 1.1');
+imshow(histeq_image);
+title('Histogram Equalised Image');
 
-figure;
+subplot(2,2,4);
+plot(0:1:255, hist_after, '-bo', 'MarkerSize', 2);
+title('Frequency Histogram after Equalization');
+xlabel('Pixel Bins');
+ylabel('Frequency');
+axis tight;
 
+%% References
 
-
-
-p = pixel_hist_2d(uint8(negative));
-figure;
-plot(1:1:256, p);
+% 1. https://en.wikipedia.org/wiki/Histogram_equalization
+% 2. https://www.imageeprocessing.com/2013/05/converting-rgb-image-to-hsi.html

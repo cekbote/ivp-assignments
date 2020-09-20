@@ -21,8 +21,4 @@ function [negative] = image_negative(image)
                 end
             end
         end
-    end
-        
-          
-                
-    
+    end   

@@ -22,7 +22,3 @@ function [gamma_trans] = gamma_transform(image, c, gamma)
             end
         end
     end
-        
-          
-                
-    

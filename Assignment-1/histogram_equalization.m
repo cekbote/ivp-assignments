@@ -49,16 +49,3 @@ function [histeqimage] = histogram_equalization(image)
             histeqimage(i,j) = hist_eq_map(key);
         end
     end
-    
-    
-    
-    
-    
-    
-    
-    
-            
-            
-            
-            
-    
