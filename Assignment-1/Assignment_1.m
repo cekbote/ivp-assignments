@@ -1,3 +1,10 @@
+%% IVP Assignment 1
+
+
+
+
+%% Creating a new environment.
+
 clc; 
 clear all;
 close all;
@@ -102,10 +109,13 @@ subplot(1,3,3)
 imshow(uint8(log_transform(abs(dft2d), 10)));
 title('2D DFT with Log Transform');
 
-%% Question 3: Computing the gamma transform of images.
+% The DFT can be easily visualized after the log transform.
 
-% Calling the dft_2d function.
-dft2d = dft_2d(cameraman);
+%% Question 4: Computing the gamma transform of images.
+
+% Calling the gamma_transform function.
+image_1 = gamma_transform(cameraman, 1, 0.9);
+image_2 = gamma_transform(cameraman, 1, 1.1);
 
 % Comparing the iamge, the 2D-DFT and the log transform of the 2D DFT.
 figure('Name', 'Computing the 2D-DFT of the image.');
@@ -114,21 +124,30 @@ imshow(cameraman);
 title('Original Image');
 
 subplot(1,3,2);
-imshow(uint8(abs(dft2d)));
-title('2D DFT');
+imshow(uint8(image_1));
+title('Gamma = 0.9');
 
 subplot(1,3,3)
-imshow(uint8(log_transform(abs(dft2d), 10)));
-title('2D DFT with Log Transform');
+imshow(uint8(image_2));
+title('Gamma = 1.1');
+
+%% Question 5: Using Histogram Equalization on the image.
+
+% Calling the hist_2d function to get the histogram before equalization.
+hist_before = pixel_hist_2d(cameraman);
+
+% Calling the histogram_equalization function to get the histogram
+% equalised image.
+histeq_image = histogram_equalization(cameraman);
+
+% Calling the hist_2d function to get the histogram after equalization.
+hist_after = pixel_hist_2d(histeq_image);
+
+figure;
+plot(1:1:256, p);
 
 
 
-% p = pixel_hist_2d(cameraman);
-% figure;
-% plot(1:1:256, p);
-% 
-
-% 
-% p = pixel_hist_2d(uint8(negative));
-% figure;
-% plot(1:1:256, p);
+p = pixel_hist_2d(uint8(negative));
+figure;
+plot(1:1:256, p);
