@@ -1,0 +1,10 @@
+function [hue, sat, inten] = rgb_to_hsi(red, green, blue, img)
+    theta = acos((1/2 * ((red - green)+(red - blue)))./((red - green).^2 + sqrt((red-blue).*(green - blue))+0.000001));
+    hue = ((blue>green) * (360 - theta) + (blue<=green) * (theta));
+    sat = 1 - (3./(red + green + blue)) .* min(min(red, green), blue);
+    inten = (red + green + blue)/3;
+
+%     hue = acos((1/2 * ((red - green)+(red - blue)))./((red - green).^2 + sqrt((red-blue).*(green - blue))+0.000001));
+%     hue(blue>green)= 360 - hue(blue>green);hue = hue/360;
+%     sat = 1 - 3./(sum(img, 3)) .* min(img,[],3);
+%     inten = sum(img, 3)./3;

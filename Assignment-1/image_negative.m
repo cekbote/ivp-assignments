@@ -1,6 +1,10 @@
+% Function that computes the negative of an image.
+
 function [negative] = image_negative(image)
     negative = image;
     [~, dim] = size(size(image));
+   
+    % If conditional is used to check whether the image is 2D or 3D. 
     if dim == 2
         [row, col] = size(image);
         for i = 1:row
