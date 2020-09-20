@@ -1,9 +1,0 @@
-function [dft2d] = dft_2d(image)
-image = double(image);
-[M, N] = size(image)
-
-m = 0:1:M-1;
-n = 0:1:N-1;
-
-exponential_x = m' * m;
-exponential_x = -2*pi

@@ -46,7 +46,7 @@ green = lena_color(:,:,2);
 blue = lena_color(:,:,3);
 
 % Plotting the image and its constituent RGB Colors.
-figure('Name', 'Decomposing an RBG Image to its Constituent Colours');
+figure('Name', 'Decomposing an RGB Image to its Constituent Colours');
 subplot(2,2,1);
 imshow(lena_color);
 title('Original Image');
@@ -67,7 +67,7 @@ title('Green Channel');
 [hue, sat, int] = rgb_to_hsi(double(red), double(green), double(blue), double(lena_color));
 
 % Comparing the hue, saturation and intensity to the original image.
-figure('Name', 'Decomposing an RBG Image to HSI');
+figure('Name', 'Decomposing an RGB Image to HSI');
 subplot(2,3,1);
 imshow(lena_color);
 title('Original Image');
@@ -92,7 +92,7 @@ title('Intensity Channel');
 his_image(:,:,1) = hue; his_image(:,:,2) = sat; his_image(:,:,3) = int;
 subplot(2,3,5);
 imshow(uint8(his_image));
-title('Image using HSI as RBG');
+title('Image using HSI as RGB');
 
 %% Question 2: Obtaining the negative of the image.
 
