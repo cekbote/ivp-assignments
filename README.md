@@ -1,1 +1,1 @@
-# Image and Video Processing Assignments
+# Image and Video Processing Course Assignments 
