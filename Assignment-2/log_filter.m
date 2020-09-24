@@ -8,16 +8,21 @@ function [log] = log_filter(filter_dim, sigma)
         for j=1:filter_dim
             x = double(i-n);
             y = double(j-n);
-            % The negative sign is added so that we get a mexican hat. Else
-            % what happens is that at the center (0,0) the sign inverts and
-            % we get a minimum at the center and a maximum everywhere else.
-            % wont matter that much as we are only worried about zero
-            % crossing but just putting it out there. 
-            log(i,j) = -double((x^2+y^2-sigma^2)*...
+            log(i,j) = double((x^2+y^2-sigma^2)*...
                 exp(-(x^2 + y^2)/(2*sigma^2))/sigma^4);
-            
         end
     end
+    
+    % The problem with this is that the sum of all the coefficients is not
+    % zero. This causes an issue when we have to find the zero
+    % crossings. Causing us to renormalize it in the end. Moreover, what 
+    % happens is that since the total is a positive number, it basically 
+    % enhances values that are similar in nature. For example, brighter 
+    % spots become brighter and darker spots become brighter because of 
+    % the fact that the total is positive. Instead, lets normalise this 
+    % filter itself such that the total sum is 0.
+    
+    log = log - mean(mean(log));
     
     
     
