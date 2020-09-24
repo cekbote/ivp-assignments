@@ -1,0 +1,17 @@
+% Function that returns the laplacian of a gaussian blur for a given
+% filter_dim.
+
+function [log] = log_filter(filter_dim, sigma)
+    log = double(zeros(filter_dim, filter_dim));
+    n = uint8(filter_dim/2);
+    for i=1:filter_dim
+        for j=1:filter_dim
+            x = double(i)
+            y = double(j)            
+            log((i+n+1),(j+n+1)) = double((x^2+y^2-sigma^2)*exp(-(x^2 + y^2)/(2*sigma^2))/sigma^4);
+            
+        end
+    end
+    
+    
+    
