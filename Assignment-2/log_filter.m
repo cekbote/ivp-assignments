@@ -23,6 +23,3 @@ function [log] = log_filter(filter_dim, sigma)
     % filter itself such that the total sum is 0.
     
     log = log - mean(mean(log));
-    
-    
-    

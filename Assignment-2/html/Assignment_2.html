@@ -1,0 +1,692 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment_2</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-09-26"><meta name="DC.source" content="Assignment_2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 2</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created for the Assignment: add_padding</a></li><li><a href="#4">Functions Created for the Assignment: log_filter</a></li><li><a href="#5">Functions Created for the Assignment: correlation</a></li><li><a href="#6">Functions Created for the Assignment: zero_crossing_enhanced_image</a></li><li><a href="#7">Functions Created for the Assignment: gaussian_blur</a></li><li><a href="#8">Functions Created for the Assignment: non_maxima_supression_with_thresh</a></li><li><a href="#9">Functions Created for the Assignment: grad_filter</a></li><li><a href="#10">Functions Created for the Assignment: inv_dft2d</a></li><li><a href="#11">Functions Created for the Assignment: log_transform</a></li><li><a href="#12">Functions Created for the Assignment: dft_2d</a></li><li><a href="#13">Image Imports</a></li><li><a href="#14">Question 1: Use the Marr-Hilderith filter to obtain the edges of the image.</a></li><li><a href="#15">Question 2: Use the Canny Edge Detection Technique to obtain the edges of the image.</a></li><li><a href="#16">Question 3: Phase only reconstruction of the image from the Fourier Domain.</a></li><li><a href="#17">Question 4: Phase only reconstruction of the image from the Fourier Domain.</a></li></ul></div><h2>IVP Assignment 2<a name="1"></a></h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+<span class="comment">% Institute: IIT, Bhubaneswar</span>
+<span class="comment">% Date: 25.09.2020</span>
+<span class="comment">% Degree: Btech</span>
+<span class="comment">% Branch: Electronics and Communication</span>
+<span class="comment">% Roll Number: 17EC01041</span>
+</pre><h2>Creating a new environment.<a name="2"></a></h2><pre class="codeinput">clc;
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+</pre><h2>Functions Created for the Assignment: add_padding<a name="3"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that pads a specific value to the image. The value us user</span>
+<span class="comment">% entered. The filter_dim is assumed to be odd and the filter is assumed to</span>
+<span class="comment">% be a square filter.</span>
+
+<span class="keyword">function</span> [img] = add_padding(image, filter_dim, value)
+    img = image;
+    [~, cols] = size(image);
+    n = uint8(floor(filter_dim/2));
+    <span class="comment">% Horizontal padding is to be added on the top and bottom of the image</span>
+    horizontal_padding = zeros(n, cols) + value;
+    img = [horizontal_padding; img; horizontal_padding];
+    [row, ~] = size(img);
+    <span class="comment">% Vertical padding is to be added on the left and the right. The 2*n</span>
+    <span class="comment">% additional rows is for the horizontal padding added on the top and</span>
+    <span class="comment">% bottom.</span>
+    vertical_padding = zeros(row, n) + value;
+    img = [vertical_padding img vertical_padding];
+
+</pre><h2>Functions Created for the Assignment: log_filter<a name="4"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns the laplacian of a gaussian blur for a given</span>
+<span class="comment">% filter_dim.</span>
+
+<span class="keyword">function</span> [log] = log_filter(filter_dim, sigma)
+    log = double(zeros(filter_dim, filter_dim));
+    n = double(ceil(filter_dim/2));
+    <span class="keyword">for</span> i=1:filter_dim
+        <span class="keyword">for</span> j=1:filter_dim
+            x = double(i-n);
+            y = double(j-n);
+            log(i,j) = double((x^2+y^2-sigma^2)*<span class="keyword">...</span>
+                exp(-(x^2 + y^2)/(2*sigma^2))/sigma^4);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% The problem with this is that the sum of all the coefficients is not</span>
+    <span class="comment">% zero. This causes an issue when we have to find the zero</span>
+    <span class="comment">% crossings. Causing us to renormalize it in the end. Moreover, what </span>
+    <span class="comment">% happens is that since the total is a positive number, it basically </span>
+    <span class="comment">% enhances values that are similar in nature. For example, brighter </span>
+    <span class="comment">% spots become brighter and darker spots become brighter because of </span>
+    <span class="comment">% the fact that the total is positive. Instead, lets normalise this </span>
+    <span class="comment">% filter itself such that the total sum is 0.</span>
+    
+    log = log - mean(mean(log));
+
+</pre><h2>Functions Created for the Assignment: correlation<a name="5"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that convolves an image with a filter. The assumption is that</span>
+<span class="comment">% the filter is a square and has odd dimensions. If it is required that the </span>
+<span class="comment">% image does not loose its dimentsions due to the convolution process it is </span>
+<span class="comment">% required that the image should be padded.</span>
+
+<span class="keyword">function</span> [img] = correlation(image, filter)
+[f_row, f_col] = size(filter);
+[i_row, i_col] = size(image);
+image = double(image);
+img=double(zeros(i_row-f_row+1, i_col-f_col+1));
+<span class="keyword">for</span> i=1:(i_row-f_row+1)
+    <span class="keyword">for</span> j=1:(i_col-f_col+1)
+        img(i,j) = sum(sum(image(i:i+f_row-1,j:j+f_col-1).*filter));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+</pre><h2>Functions Created for the Assignment: zero_crossing_enhanced_image<a name="6"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that uses zero crossing to enhance the log (Laplacian of</span>
+<span class="comment">% Gaussian) image. Whereever there is a zero crossig, thats the point where</span>
+<span class="comment">% the edge is present. A threshold is added so that we can control what</span>
+<span class="comment">% edges we want to preserve and what edges we don't. Zeros crossing can be</span>
+<span class="comment">% found out taking a 3x3 square and then checking the opposite pixels.</span>
+
+<span class="keyword">function</span> [img] = zero_crossing_enhanced_image(image, thresh)
+    [row, col] = size(image);
+    image = add_padding(image, 3, 0);
+    <span class="comment">% Vertical filter is used to the center top and bottom pixels.</span>
+    vert_filter = zeros(3,3);
+    vert_filter(1,2) = 1;
+    vert_filter(3,2) = 1;
+    <span class="comment">% Horizontal filter is used to the horizontal middle pixels.</span>
+    horz_filter = zeros(3,3);
+    horz_filter(2,1) = 1;
+    horz_filter(2,3) = 1;
+    <span class="comment">% Positive 45 degree filter is used to the pixels on the positive </span>
+    <span class="comment">% diagonal barring the center.</span>
+    pos_45_deg_filter = zeros(3,3);
+    pos_45_deg_filter(3,1) = 1;
+    pos_45_deg_filter(1,3) = 1;
+    <span class="comment">% Negative 45 degree filter is used to the pixels on the negative </span>
+    <span class="comment">% diagonal barring the center.</span>
+    neg_45_deg_filter = zeros(3,3);
+    neg_45_deg_filter(1,1) = 1;
+    neg_45_deg_filter(3,3) = 1;
+    img = double(zeros(row, col));
+    <span class="keyword">for</span> i=1:(row)
+        <span class="keyword">for</span> j=1:(row)
+            v = image(i:i+2,j:j+2) .* vert_filter;
+            h = image(i:i+2,j:j+2) .* horz_filter;
+            pos_45 = image(i:i+2,j:j+2) .* pos_45_deg_filter;
+            neg_45 = image(i:i+2,j:j+2) .* neg_45_deg_filter;
+            check = 0;
+            <span class="keyword">if</span> (v(1,2)*v(3,2)&lt;-1 &amp;&amp; abs(v(1,2)-v(3,2))&gt;thresh)
+                check = 1;
+            <span class="keyword">elseif</span> (h(2,1)*h(2,3)&lt;-1 &amp;&amp; abs(h(2,1)-v(2,3))&gt;thresh)
+                check = 1;
+            <span class="keyword">elseif</span> (pos_45(3,1)*pos_45(1,3)&lt;-1 &amp;&amp; abs(pos_45(3,1)-pos_45(1,3))&gt;thresh)
+                check = 1;
+            <span class="keyword">elseif</span> (neg_45(1,1)*neg_45(3,3)&lt;-1 &amp;&amp; abs(neg_45(3,1)-neg_45(1,3))&gt;thresh)
+                check = 1;
+            <span class="keyword">end</span>
+            
+            <span class="keyword">if</span> (check == 1)
+                img(i,j) = 255;
+            <span class="keyword">else</span>
+                img(i,j) = 0;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>  
+
+</pre><h2>Functions Created for the Assignment: gaussian_blur<a name="7"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns the gaussian blur, for nxn dimensions.</span>
+
+<span class="keyword">function</span> [gauss_blur] = gaussian_blur(filter_dim, sigma)
+    gauss_blur = double(zeros(filter_dim, filter_dim));
+    n = double(ceil(filter_dim/2));
+    <span class="keyword">for</span> i=1:filter_dim
+        <span class="keyword">for</span> j=1:filter_dim
+            x = double(i-n);
+            y = double(j-n);
+            gauss_blur(i,j) = exp(-(x^2 + y^2)/(2*sigma^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% For getting a zero mean signal.</span>
+    gauss_blur = gauss_blur - mean(mean(gauss_blur));
+
+</pre><h2>Functions Created for the Assignment: non_maxima_supression_with_thresh<a name="8"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns a non_maxima_supressed image. The inputs are the</span>
+<span class="comment">% image, the gradient of the image in x, the gradient of the image in y,</span>
+<span class="comment">% and the threshold above which pixels would be considered.</span>
+
+<span class="keyword">function</span> [img] = non_maxima_supression_with_thresh(image, grad_x, grad_y, thresh)
+    image = double(image);
+    mag = sqrt(grad_x.^2 + grad_y.^2);
+    angle = atan2(grad_y, grad_x) * 180/pi;
+    angle = angle + (angle&gt;180)*(-180) + (angle&lt;0)*(180);
+    [row, col] = size(image);
+    image = add_padding(image, 3, 0);
+    <span class="comment">% Vertical filter is used to the center top and bottom pixels.</span>
+    vert_filter = zeros(3,3);
+    vert_filter(1,2) = 1;
+    vert_filter(3,2) = 1;
+    <span class="comment">% Horizontal filter is used to the horizontal middle pixels.</span>
+    horz_filter = zeros(3,3);
+    horz_filter(2,1) = 1;
+    horz_filter(2,3) = 1;
+    <span class="comment">% Positive 45 degree filter is used to the pixels on the positive </span>
+    <span class="comment">% diagonal barring the center.</span>
+    pos_45_deg_filter = zeros(3,3);
+    pos_45_deg_filter(3,1) = 1;
+    pos_45_deg_filter(1,3) = 1;
+    <span class="comment">% Negative 45 degree filter is used to the pixels on the negative </span>
+    <span class="comment">% diagonal barring the center.</span>
+    neg_45_deg_filter = zeros(3,3);
+    neg_45_deg_filter(1,1) = 1;
+    neg_45_deg_filter(3,3) = 1;
+    img = double(zeros(row, col));
+    <span class="keyword">for</span> i=1:(row)
+        <span class="keyword">for</span> j=1:(col)
+            v = image(i:i+2,j:j+2) .* vert_filter;
+            h = image(i:i+2,j:j+2) .* horz_filter;
+            pos_45 = image(i:i+2,j:j+2) .* pos_45_deg_filter;
+            neg_45 = image(i:i+2,j:j+2) .* neg_45_deg_filter;
+            ang = angle(i, j);
+            sector = 0;
+            
+            <span class="comment">% Checking which bucket the angle lies in.</span>
+            <span class="keyword">if</span> ((ang&gt;0 &amp;&amp; ang&lt;22.5) || (ang&gt;157.5 &amp;&amp; ang&lt;180))
+                sector = 1;
+            <span class="keyword">elseif</span> (ang&gt;22.5 &amp;&amp; ang&lt;67.5)
+                sector = 2;
+            <span class="keyword">elseif</span> (ang&gt;67.5 &amp;&amp; ang&lt;112.5)
+                sector = 3;
+            <span class="keyword">elseif</span> (ang&gt;112.5 &amp;&amp; ang&lt;157.5)
+                sector = 4;
+            <span class="keyword">end</span>
+            
+            value = 0;
+            
+            <span class="comment">% Assigning a value to the corresponsing pixel depending on</span>
+            <span class="comment">% the internsity of the original image.</span>
+            <span class="keyword">switch</span> sector
+                <span class="keyword">case</span> 1
+                    <span class="keyword">if</span> (h(2,1)&gt;mag(i,j) &amp;&amp; h(2,3)&gt;mag(i,j))
+                        value = mag(i,j);
+                    <span class="keyword">end</span>
+                <span class="keyword">case</span> 2 
+                    <span class="keyword">if</span> (pos_45(3,1)&gt;mag(i,j) &amp;&amp; pos_45(1,3)&gt;mag(i,j))
+                        value = mag(i,j);
+                    <span class="keyword">end</span>
+                <span class="keyword">case</span> 3 
+                    <span class="keyword">if</span> (v(1,2)&gt;mag(i,j) &amp;&amp; v(3,2)&gt;mag(i,j))
+                        value = mag(i,j);
+                    <span class="keyword">end</span>
+                <span class="keyword">case</span> 4
+                    <span class="keyword">if</span> (neg_45(1,1)&gt;mag(i,j) &amp;&amp; neg_45(1,1)&gt;mag(i,j))
+                        value = mag(i,j);
+                    <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            
+            img(i,j)=value;
+            
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    img = img.*(img&gt;thresh);
+
+</pre><h2>Functions Created for the Assignment: grad_filter<a name="9"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns the 3x3 grad filter for a given x or y direction.</span>
+
+<span class="keyword">function</span> [grad_filt] = grad_filter(x_or_y)
+    grad_filt = double(zeros(3,3));
+    <span class="keyword">if</span> (x_or_y == <span class="string">'x'</span>)
+        grad_filt(2,1) = 1;
+        grad_filt(2,2) = -2;
+        grad_filt(2,3) = 1;
+    <span class="keyword">else</span>
+        grad_filt(1,2) = 1;
+        grad_filt(2,2) = -2;
+        grad_filt(3,2) = 1;
+    <span class="keyword">end</span>  
+
+</pre><h2>Functions Created for the Assignment: inv_dft2d<a name="10"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns the inverse of the 2D DFT</span>
+
+<span class="keyword">function</span> [inv_fft] = inv_dft2d(image)
+    image = double(image);
+    [M, N] = size(image);
+
+    <span class="comment">% m, n should go from -pi to pi for better interpretation.</span>
+    m = -(M-1)/2:1:(M-1)/2;
+    n = -(N-1)/2:1:(N-1)/2;
+
+    <span class="comment">% Creates the X exponentials required to compute the DFT. </span>
+    exponential_x = m' * m;
+    exponential_x = exp(-2 * pi * 1i / M .* exponential_x);
+    
+    <span class="comment">% Creates the Y exponentials required to compute the DFT.</span>
+    exponential_y = n' * n;
+    exponential_y = exp(-2 * pi * 1i / N .* exponential_y);
+
+    <span class="comment">% Final FFT Computation. </span>
+    inv_fft = inv(exponential_x) * image * inv(exponential_y);
+
+</pre><h2>Functions Created for the Assignment: log_transform<a name="11"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that computes the log transform for an image.</span>
+
+<span class="keyword">function</span> [log_trans] = log_transform(image, c)
+    log_trans = double(image);
+    [~, dim] = size(size(image));
+    
+    <span class="comment">% If conditional is used to check whether the image is 2D or 3D.</span>
+    <span class="keyword">if</span> dim == 2
+        [row, col] = size(image);
+        <span class="keyword">for</span> i = 1:row
+            <span class="keyword">for</span> j = 1:col
+                log_trans(i, j) = c * log( 1+ (log_trans(i, j)));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        [row, col, channels] = size(image);
+        <span class="keyword">for</span> i = 1:row
+            <span class="keyword">for</span> j = 1:col
+                <span class="keyword">for</span> k = 1: channels
+                    log_trans(i, j, k) = c * log(1 + (log_trans(i, j, k)));
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+</pre><h2>Functions Created for the Assignment: dft_2d<a name="12"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that computes the 2D-DFT for an image.</span>
+
+<span class="keyword">function</span> [dft2d] = dft_2d(image)
+    image = double(image);
+    [M, N] = size(image);
+
+    <span class="comment">% m, n should go from -pi to pi for better interpretation.</span>
+    m = -(M-1)/2:1:(M-1)/2;
+    n = -(N-1)/2:1:(N-1)/2;
+
+    <span class="comment">% Creates the X exponentials required to compute the DFT. </span>
+    exponential_x = m' * m;
+    exponential_x = exp(-2 * pi * 1i / M .* exponential_x);
+    
+    <span class="comment">% Creates the Y exponentials required to compute the DFT.</span>
+    exponential_y = n' * n;
+    exponential_y = exp(-2 * pi * 1i / N .* exponential_y);
+
+    <span class="comment">% Final FFT Computation. </span>
+    dft2d = exponential_x * image * exponential_y;
+
+</pre><h2>Image Imports<a name="13"></a></h2><pre class="codeinput">cameraman = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\cameraman.tif'</span>);
+lena_color = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\lena_color_256.tif'</span>);
+</pre><h2>Question 1: Use the Marr-Hilderith filter to obtain the edges of the image.<a name="14"></a></h2><pre class="codeinput"><span class="comment">% Padding the image so that the correlation does not reduce the dimensions.</span>
+mh_image = add_padding(cameraman, 5, 0);
+
+<span class="comment">% Generating the LOG Filter</span>
+log_filt = log_filter(5, 1);
+
+<span class="comment">% Correlation of the image and the LOG filter.</span>
+correlated_image = correlation(mh_image, log_filt);
+
+<span class="comment">% Enhancing the zero crossings.</span>
+mh_final_image_0 = zero_crossing_enhanced_image(correlated_image, 0);
+mh_final_image_3 = zero_crossing_enhanced_image(correlated_image, 3);
+mh_final_image_6 = zero_crossing_enhanced_image(correlated_image, 6);
+mh_final_image_9 = zero_crossing_enhanced_image(correlated_image, 9);
+
+<span class="comment">%Plotting the images.</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Maar-Hilderith Edge Detection 1'</span>);
+subplot(1,2,1);
+imshow(cameraman);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,2,2);
+imshow(correlated_image);
+title(<span class="string">'Image Correlated with LOG Filter'</span>);
+
+figure(<span class="string">'Name'</span>, <span class="string">'Maar-Hilderith Edge Detection 2'</span>);
+subplot(1,2,1);
+imshow(mh_final_image_0);
+title(<span class="string">'MH Filtered (Threshold=0)'</span>);
+
+subplot(1,2,2);
+imshow(mh_final_image_3);
+title(<span class="string">'MH Filtered (Threshold=3)'</span>);
+
+figure(<span class="string">'Name'</span>, <span class="string">'Maar-Hilderith Edge Detection 3'</span>);
+subplot(1,2,1);
+imshow(mh_final_image_6);
+title(<span class="string">'MH Filtered (Threshold=6)'</span>);
+
+subplot(1,2,2);
+imshow(mh_final_image_9);
+title(<span class="string">'MH Filtered (Threshold=9)'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_2_01.png" alt=""> <img vspace="5" hspace="5" src="Assignment_2_02.png" alt=""> <img vspace="5" hspace="5" src="Assignment_2_03.png" alt=""> <h2>Question 2: Use the Canny Edge Detection Technique to obtain the edges of the image.<a name="15"></a></h2><pre class="codeinput"><span class="comment">% Padding the image so that the correlation does not reduce the dimensions.</span>
+ce_image = add_padding(cameraman, 5, 0);
+
+<span class="comment">% Getting the Gaussian Blur Kernel</span>
+gaus_blur = gaussian_blur(5, 1);
+
+<span class="comment">% Correlation of the blur and the padded image.</span>
+gaussing_blurred_image = correlation(ce_image, gaus_blur);
+
+<span class="comment">% Getting the gradient filters</span>
+g_x = grad_filter(<span class="string">'x'</span>);
+g_y = grad_filter(<span class="string">'y'</span>);
+
+<span class="comment">% Padding the image so that the correlation does not reduce the dimensions.</span>
+gaussing_blurred_image_padded = add_padding(gaussing_blurred_image, 3, 0);
+
+<span class="comment">% Getting the gradients of the gaussian blurred image.</span>
+grad_x = correlation(gaussing_blurred_image_padded , g_x);
+grad_y = correlation(gaussing_blurred_image_padded , g_y);
+
+<span class="comment">% Performing Non Maxima Supression.</span>
+nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0);
+nms_2 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 2);
+
+<span class="comment">%Plotting the images.</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Canny Edge Detection 1'</span>);
+subplot(1,2,1);
+imshow(gaussing_blurred_image);
+title(<span class="string">'Image Corr with the Gaussian Blur'</span>);
+
+subplot(1,2,2);
+imshow(grad_x);
+title(<span class="string">'Grad of the Gauss Blur in X'</span>);
+
+figure(<span class="string">'Name'</span>, <span class="string">'Canny Edge Detection 2'</span>);
+subplot(1,2,1);
+imshow(grad_y);
+title(<span class="string">'Grad of the Gauss Blur in Y'</span>);
+
+subplot(1,2,2);
+imshow(nms_1);
+title(<span class="string">'Nonmax Supress (Thresh=0.1)'</span>);
+
+figure(<span class="string">'Name'</span>, <span class="string">'Canny Edge Detection 3'</span>);
+subplot(1,2,1);
+imshow(abs(nms_2));
+title(<span class="string">'Nonmax Supress (Thresh=2)'</span>);
+
+subplot(1,2,2);
+imshow(abs(nms_2-nms_1));
+title(<span class="string">'Diff of the Nonmax Suppressions'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_2_04.png" alt=""> <img vspace="5" hspace="5" src="Assignment_2_05.png" alt=""> <img vspace="5" hspace="5" src="Assignment_2_06.png" alt=""> <h2>Question 3: Phase only reconstruction of the image from the Fourier Domain.<a name="16"></a></h2><pre class="codeinput"><span class="comment">% Computing the DFT of the image.</span>
+
+<span class="comment">% Computing the DFT.</span>
+dft2d = dft_2d(cameraman);
+
+<span class="comment">% Getting the magnitude and phase.</span>
+mag = abs(dft2d);
+phase = atan2(imag(dft2d), real(dft2d));
+phase_response = exp(1i*phase);
+
+figure(<span class="string">'Name'</span>, <span class="string">'2D DFT Reconstruction Phase Response'</span>);
+subplot(1,2,1);
+imshow(cameraman);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,2,2);
+imshow((im2uint8(mat2gray(real(inv_dft2d(phase_response)))))*3);
+title(<span class="string">'Phase Response'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_2_07.png" alt=""> <h2>Question 4: Phase only reconstruction of the image from the Fourier Domain.<a name="17"></a></h2><pre class="codeinput"><span class="comment">% Comparing the image, the 2D-DFT and the log transform of the 2D DFT.</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Computing the 2D-DFT of the image.'</span>);
+subplot(1,3,1);
+imshow(cameraman);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,3,2);
+imshow(uint8(abs(dft2d)));
+title(<span class="string">'2D DFT'</span>);
+
+subplot(1,3,3)
+imshow(uint8(log_transform(abs(dft2d), 10)));
+title(<span class="string">'2D DFT with Log Transform'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_2_08.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% IVP Assignment 2
+
+% Name: Chanakya Ajit Ekbote
+% Institute: IIT, Bhubaneswar
+% Date: 25.09.2020
+% Degree: Btech
+% Branch: Electronics and Communication
+% Roll Number: 17EC01041
+
+%% Creating a new environment.
+
+clc; 
+clear all;
+close all;
+
+%% Functions Created for the Assignment: add_padding
+% <include>add_padding.m</include>
+
+%% Functions Created for the Assignment: log_filter
+% <include>log_filter.m</include>
+
+%% Functions Created for the Assignment: correlation
+% <include>correlation.m</include>
+
+%% Functions Created for the Assignment: zero_crossing_enhanced_image
+% <include>zero_crossing_enhanced_image.m</include>
+
+%% Functions Created for the Assignment: gaussian_blur
+% <include>gaussian_blur.m</include>
+
+%% Functions Created for the Assignment: non_maxima_supression_with_thresh
+% <include>non_maxima_supression_with_thresh.m</include>
+
+%% Functions Created for the Assignment: grad_filter
+% <include>grad_filter.m</include>
+
+%% Functions Created for the Assignment: inv_dft2d
+% <include>inv_dft2d.m</include>
+
+%% Functions Created for the Assignment: log_transform
+% <include>log_transform.m</include>
+
+%% Functions Created for the Assignment: dft_2d
+% <include>dft_2d.m</include>
+
+%% Image Imports
+
+cameraman = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\cameraman.tif');
+lena_color = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-1\images\lena_color_256.tif');
+
+%% Question 1: Use the Marr-Hilderith filter to obtain the edges of the image.
+
+% Padding the image so that the correlation does not reduce the dimensions.
+mh_image = add_padding(cameraman, 5, 0);
+
+% Generating the LOG Filter
+log_filt = log_filter(5, 1);
+
+% Correlation of the image and the LOG filter.
+correlated_image = correlation(mh_image, log_filt);
+
+% Enhancing the zero crossings.
+mh_final_image_0 = zero_crossing_enhanced_image(correlated_image, 0);
+mh_final_image_3 = zero_crossing_enhanced_image(correlated_image, 3);
+mh_final_image_6 = zero_crossing_enhanced_image(correlated_image, 6);
+mh_final_image_9 = zero_crossing_enhanced_image(correlated_image, 9);
+
+%Plotting the images.
+figure('Name', 'Maar-Hilderith Edge Detection 1');
+subplot(1,2,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(1,2,2);
+imshow(correlated_image);
+title('Image Correlated with LOG Filter');
+
+figure('Name', 'Maar-Hilderith Edge Detection 2');
+subplot(1,2,1);
+imshow(mh_final_image_0);
+title('MH Filtered (Threshold=0)');
+
+subplot(1,2,2);
+imshow(mh_final_image_3);
+title('MH Filtered (Threshold=3)');
+
+figure('Name', 'Maar-Hilderith Edge Detection 3');
+subplot(1,2,1);
+imshow(mh_final_image_6);
+title('MH Filtered (Threshold=6)');
+
+subplot(1,2,2);
+imshow(mh_final_image_9);
+title('MH Filtered (Threshold=9)');
+
+%% Question 2: Use the Canny Edge Detection Technique to obtain the edges of the image.
+
+% Padding the image so that the correlation does not reduce the dimensions.
+ce_image = add_padding(cameraman, 5, 0);
+
+% Getting the Gaussian Blur Kernel
+gaus_blur = gaussian_blur(5, 1);
+
+% Correlation of the blur and the padded image.
+gaussing_blurred_image = correlation(ce_image, gaus_blur);
+
+% Getting the gradient filters 
+g_x = grad_filter('x');
+g_y = grad_filter('y');
+
+% Padding the image so that the correlation does not reduce the dimensions.
+gaussing_blurred_image_padded = add_padding(gaussing_blurred_image, 3, 0);
+
+% Getting the gradients of the gaussian blurred image.
+grad_x = correlation(gaussing_blurred_image_padded , g_x);
+grad_y = correlation(gaussing_blurred_image_padded , g_y);
+
+% Performing Non Maxima Supression.
+nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0);
+nms_2 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 2);
+
+%Plotting the images.
+figure('Name', 'Canny Edge Detection 1');
+subplot(1,2,1);
+imshow(gaussing_blurred_image);
+title('Image Corr with the Gaussian Blur');
+
+subplot(1,2,2);
+imshow(grad_x);
+title('Grad of the Gauss Blur in X');
+
+figure('Name', 'Canny Edge Detection 2');
+subplot(1,2,1);
+imshow(grad_y);
+title('Grad of the Gauss Blur in Y');
+
+subplot(1,2,2);
+imshow(nms_1);
+title('Nonmax Supress (Thresh=0.1)');
+
+figure('Name', 'Canny Edge Detection 3');
+subplot(1,2,1);
+imshow(abs(nms_2));
+title('Nonmax Supress (Thresh=2)');
+
+subplot(1,2,2);
+imshow(abs(nms_2-nms_1));
+title('Diff of the Nonmax Suppressions');
+
+%% Question 3: Phase only reconstruction of the image from the Fourier Domain.
+
+% Computing the DFT of the image.
+
+% Computing the DFT.
+dft2d = dft_2d(cameraman);
+
+% Getting the magnitude and phase.
+mag = abs(dft2d);
+phase = atan2(imag(dft2d), real(dft2d));
+phase_response = exp(1i*phase);
+
+figure('Name', '2D DFT Reconstruction Phase Response');
+subplot(1,2,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(1,2,2);
+imshow((im2uint8(mat2gray(real(inv_dft2d(phase_response)))))*3);
+title('Phase Response');
+
+%% Question 4: Phase only reconstruction of the image from the Fourier Domain.
+
+% Comparing the image, the 2D-DFT and the log transform of the 2D DFT.
+figure('Name', 'Computing the 2D-DFT of the image.');
+subplot(1,3,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(1,3,2);
+imshow(uint8(abs(dft2d)));
+title('2D DFT');
+
+subplot(1,3,3)
+imshow(uint8(log_transform(abs(dft2d), 10)));
+title('2D DFT with Log Transform');
+##### SOURCE END #####
+--></body></html>

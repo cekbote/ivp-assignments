@@ -1,4 +1,4 @@
-%% IVP Assignment 1
+%% IVP Assignment 2
 
 % Name: Chanakya Ajit Ekbote
 % Institute: IIT, Bhubaneswar
@@ -12,6 +12,36 @@
 clc; 
 clear all;
 close all;
+
+%% Functions Created for the Assignment: add_padding
+% <include>add_padding.m</include>
+
+%% Functions Created for the Assignment: log_filter
+% <include>log_filter.m</include>
+
+%% Functions Created for the Assignment: correlation
+% <include>correlation.m</include>
+
+%% Functions Created for the Assignment: zero_crossing_enhanced_image
+% <include>zero_crossing_enhanced_image.m</include>
+
+%% Functions Created for the Assignment: gaussian_blur
+% <include>gaussian_blur.m</include>
+
+%% Functions Created for the Assignment: non_maxima_supression_with_thresh
+% <include>non_maxima_supression_with_thresh.m</include>
+
+%% Functions Created for the Assignment: grad_filter
+% <include>grad_filter.m</include>
+
+%% Functions Created for the Assignment: inv_dft2d
+% <include>inv_dft2d.m</include>
+
+%% Functions Created for the Assignment: log_transform
+% <include>log_transform.m</include>
+
+%% Functions Created for the Assignment: dft_2d
+% <include>dft_2d.m</include>
 
 %% Image Imports
 
@@ -36,28 +66,30 @@ mh_final_image_6 = zero_crossing_enhanced_image(correlated_image, 6);
 mh_final_image_9 = zero_crossing_enhanced_image(correlated_image, 9);
 
 %Plotting the images.
-figure('Name', 'Maar-Hilderith Edge Detection');
-subplot(2,3,1);
+figure('Name', 'Maar-Hilderith Edge Detection 1');
+subplot(1,2,1);
 imshow(cameraman);
 title('Original Image');
 
-subplot(2,3,2);
+subplot(1,2,2);
 imshow(correlated_image);
 title('Image Correlated with LOG Filter');
 
-subplot(2,3,3);
+figure('Name', 'Maar-Hilderith Edge Detection 2');
+subplot(1,2,1);
 imshow(mh_final_image_0);
 title('MH Filtered (Threshold=0)');
 
-subplot(2,3,4);
+subplot(1,2,2);
 imshow(mh_final_image_3);
 title('MH Filtered (Threshold=3)');
 
-subplot(2,3,5);
+figure('Name', 'Maar-Hilderith Edge Detection 3');
+subplot(1,2,1);
 imshow(mh_final_image_6);
 title('MH Filtered (Threshold=6)');
 
-subplot(2,3,6);
+subplot(1,2,2);
 imshow(mh_final_image_9);
 title('MH Filtered (Threshold=9)');
 
@@ -88,45 +120,66 @@ nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y
 nms_2 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 2);
 
 %Plotting the images.
-figure('Name', 'Canny Edge Detection');
-subplot(2,3,1);
+figure('Name', 'Canny Edge Detection 1');
+subplot(1,2,1);
 imshow(gaussing_blurred_image);
-title('Image Correlated with the Gaussian Blur');
+title('Image Corr with the Gaussian Blur');
 
-subplot(2,3,2);
+subplot(1,2,2);
 imshow(grad_x);
-title('Gradient of the Gaussian Blur in x');
+title('Grad of the Gauss Blur in X');
 
-subplot(2,3,3);
+figure('Name', 'Canny Edge Detection 2');
+subplot(1,2,1);
 imshow(grad_y);
-title('Gradient of the Gaussian Blur in y');
+title('Grad of the Gauss Blur in Y');
 
-subplot(2,3,4);
+subplot(1,2,2);
 imshow(nms_1);
-title('Nonmax Supression (Threshold=0.1)');
+title('Nonmax Supress (Thresh=0.1)');
 
-subplot(2,3,5);
+figure('Name', 'Canny Edge Detection 3');
+subplot(1,2,1);
 imshow(abs(nms_2));
-title('Nonmax Supression (Threshold=2)');
+title('Nonmax Supress (Thresh=2)');
 
-subplot(2,3,6);
+subplot(1,2,2);
 imshow(abs(nms_2-nms_1));
-title('Differnce of the Nonmax Suppressed images');
+title('Diff of the Nonmax Suppressions');
 
-%% Question 3: Using the 
+%% Question 3: Phase only reconstruction of the image from the Fourier Domain.
 
+% Computing the DFT of the image.
 
+% Computing the DFT.
+dft2d = dft_2d(cameraman);
 
-% imshow(x);
-% dft2d = dft_2d(cameraman);
-% mag = abs(dft2d);
-% x = atan2(imag(dft2d), real(dft2d));
-% x = exp(1i*x);
-% imshow((im2uint8(mat2gray(real(inv_dft2d(x))))));
+% Getting the magnitude and phase.
+mag = abs(dft2d);
+phase = atan2(imag(dft2d), real(dft2d));
+phase_response = exp(1i*phase);
 
-% min_ = min(min(x));
-% max_ = max(max(x));
-% x = (x-min_)*255/(max_-min_);
-% imshow(uint8(x));
+figure('Name', '2D DFT Reconstruction Phase Response');
+subplot(1,2,1);
+imshow(cameraman);
+title('Original Image');
 
+subplot(1,2,2);
+imshow((im2uint8(mat2gray(real(inv_dft2d(phase_response)))))*3);
+title('Phase Response');
 
+%% Question 4: Phase only reconstruction of the image from the Fourier Domain.
+
+% Comparing the image, the 2D-DFT and the log transform of the 2D DFT.
+figure('Name', 'Computing the 2D-DFT of the image.');
+subplot(1,3,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(1,3,2);
+imshow(uint8(abs(dft2d)));
+title('2D DFT');
+
+subplot(1,3,3)
+imshow(uint8(log_transform(abs(dft2d), 10)));
+title('2D DFT with Log Transform');

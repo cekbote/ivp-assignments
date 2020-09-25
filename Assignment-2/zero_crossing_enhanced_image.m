@@ -49,5 +49,4 @@ function [img] = zero_crossing_enhanced_image(image, thresh)
                 img(i,j) = 0;
             end
         end
-    end
-    
+    end  

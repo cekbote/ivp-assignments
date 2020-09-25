@@ -10,5 +10,4 @@ function [grad_filt] = grad_filter(x_or_y)
         grad_filt(1,2) = 1;
         grad_filt(2,2) = -2;
         grad_filt(3,2) = 1;
-    end
-        
+    end  

@@ -15,8 +15,3 @@ function [img] = add_padding(image, filter_dim, value)
     % bottom.
     vertical_padding = zeros(row, n) + value;
     img = [vertical_padding img vertical_padding];
-    
-    
-    
-    
-    

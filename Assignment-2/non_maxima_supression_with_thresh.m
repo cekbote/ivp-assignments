@@ -77,4 +77,3 @@ function [img] = non_maxima_supression_with_thresh(image, grad_x, grad_y, thresh
     end
     
     img = img.*(img>thresh);
-    
