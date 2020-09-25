@@ -62,14 +62,59 @@ imshow(mh_final_image_9);
 title('MH Filtered (Threshold=9)');
 
 %% Question 2: Use the Canny Edge Detection Technique to obtain the edges of the image.
-% image = add_padding(cameraman, 5, 0);
-% imshow(uint8(x));
-% image = add_padding(cameraman, 3, 0);
-% g_x = grad_filter('x');
-% g_y = grad_filter('y');
-% grad_x = correlation(image, g_x);
-% grad_y = correlation(image, g_y);
-% x = non_maxima_supression_with_thresh(cameraman, grad_x, grad_y, 0);
+
+% Padding the image so that the correlation does not reduce the dimensions.
+ce_image = add_padding(cameraman, 5, 0);
+
+% Getting the Gaussian Blur Kernel
+gaus_blur = gaussian_blur(5, 1);
+
+% Correlation of the blur and the padded image.
+gaussing_blurred_image = correlation(ce_image, gaus_blur);
+
+% Getting the gradient filters 
+g_x = grad_filter('x');
+g_y = grad_filter('y');
+
+% Padding the image so that the correlation does not reduce the dimensions.
+gaussing_blurred_image_padded = add_padding(gaussing_blurred_image, 3, 0);
+
+% Getting the gradients of the gaussian blurred image.
+grad_x = correlation(gaussing_blurred_image_padded , g_x);
+grad_y = correlation(gaussing_blurred_image_padded , g_y);
+
+% Performing Non Maxima Supression.
+nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0.1);
+nms_2 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0.8);
+
+%Plotting the images.
+figure('Name', 'Canny Edge Detection');
+subplot(2,3,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(2,3,2);
+imshow(gaussing_blurred_image);
+title('Image Correlated with the Gaussian Blur');
+
+subplot(2,3,3);
+imshow(grad_x);
+title('Gradient of the Gaussian Blur in x');
+
+subplot(2,3,4);
+imshow(grad_y);
+title('Gradient of the Gaussian Blur in y');
+
+subplot(2,3,5);
+imshow(nms_1);
+title('Nonmax Supression (Threshold=1)');
+
+subplot(2,3,6);
+imshow(nms_2);
+title('Nonmax Supression (Threshold=2)');
+
+
+
 % imshow(x);
 % dft2d = dft_2d(cameraman);
 % mag = abs(dft2d);
