@@ -116,7 +116,7 @@ grad_x = correlation(gaussing_blurred_image_padded , g_x);
 grad_y = correlation(gaussing_blurred_image_padded , g_y);
 
 % Performing Non Maxima Supression.
-nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0);
+nms_1 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 0.1);
 nms_2 = non_maxima_supression_with_thresh(gaussing_blurred_image, grad_x, grad_y, 2);
 
 %Plotting the images.
@@ -131,11 +131,11 @@ title('Grad of the Gauss Blur in X');
 
 figure('Name', 'Canny Edge Detection 2');
 subplot(1,2,1);
-imshow(grad_y);
+imshow((grad_y));
 title('Grad of the Gauss Blur in Y');
 
 subplot(1,2,2);
-imshow(nms_1);
+imshow((nms_1));
 title('Nonmax Supress (Thresh=0.1)');
 
 figure('Name', 'Canny Edge Detection 3');
@@ -146,6 +146,15 @@ title('Nonmax Supress (Thresh=2)');
 subplot(1,2,2);
 imshow(abs(nms_2-nms_1));
 title('Diff of the Nonmax Suppressions');
+
+figure('Name', 'Final Image');
+subplot(1,2,1);
+imshow(cameraman);
+title('Original Image');
+
+subplot(1,2,2);
+imshow(mat2gray(nms_2- abs(nms_2-nms_1)));
+title('Final Edges');
 
 %% Question 3: Phase only reconstruction of the image from the Fourier Domain.
 
