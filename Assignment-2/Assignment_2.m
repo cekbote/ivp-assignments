@@ -192,3 +192,15 @@ title('2D DFT');
 subplot(1,3,3)
 imshow(uint8(log_transform(abs(dft2d), 10)));
 title('2D DFT with Log Transform');
+
+%% Conclusion
+% From the assignment we can observe that the Maar-Hildereth Filter can be
+% used for edge detection and we can also use the Canny Edge Detection
+% method to get the edges. The main observation was that the Canny Edge
+% Detection is a much better method than Maar-Hilderith as the edges are
+% finer. In addition to that we can also observe that phase
+% reconstruction of the 2D DFT gives the edges of the image. We can also
+% observe that magnitude of the 2D-DFT image is correlated to the edges of 
+% the image. Moreover, we can also notice that the magnitude of the 2D-DFT 
+% has to be enhanced using the log transform as the magnitude of the 
+% 2D-DFT is feeble and corresponds to low pixel intensities. 
