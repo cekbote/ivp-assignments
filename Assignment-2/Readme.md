@@ -1,5 +1,10 @@
 # Resources Used
 
+## Edge Detection
+- [Digital image processing: p025 - Derivatives Laplacian Unsharp masking](https://www.youtube.com/watch?v=1b3Sr2MGLFg&t=769s)
+- [Finding the Edges (Sobel Operator) - Computerphile](https://www.youtube.com/watch?v=uihBwtPIBxM)
+- [Canny Edge Detector - Computerphile](https://www.youtube.com/watch?v=sRFM5IEqR2w)
+
 ## DFT Resources
 - [2-Dimensional Sampling Theory](https://www.youtube.com/watch?v=Vl_937LAm0g)
 - [2-Dimensional Discrete-Space Fourier Transform](https://www.youtube.com/watch?v=YYGltoYEmKo)
