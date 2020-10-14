@@ -5,8 +5,11 @@
 - [Finding the Edges (Sobel Operator) - Computerphile](https://www.youtube.com/watch?v=uihBwtPIBxM)
 - [Canny Edge Detector - Computerphile](https://www.youtube.com/watch?v=sRFM5IEqR2w)
 
-## DFT Resources
+## 2D Image Sampling
+- [Image Sampling](https://www.youtube.com/watch?v=nfEaPWZ_dRQ)
 - [2-Dimensional Sampling Theory](https://www.youtube.com/watch?v=Vl_937LAm0g)
+
+## DFT Resources
 - [2-Dimensional Discrete-Space Fourier Transform](https://www.youtube.com/watch?v=YYGltoYEmKo)
 - [How the 2D FFT works](https://www.youtube.com/watch?v=v743U7gvLq0&list=PLn0OLiymPak28kNU6D_nkUBebb5LRj3E5&index=8)
 - [Zero-padding in the time domain](https://www.youtube.com/watch?v=xbHmpDr_3SE&list=PLn0OLiymPak28kNU6D_nkUBebb5LRj3E5&index=6)
