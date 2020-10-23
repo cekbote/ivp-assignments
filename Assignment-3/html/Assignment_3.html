@@ -1,0 +1,322 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment_3</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-24"><meta name="DC.source" content="Assignment_3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 3</a></li><li><a href="#2">Creating a new environment</a></li><li><a href="#3">Image Imports</a></li><li><a href="#4">Sharpening using the Laplacian Filter</a></li><li><a href="#5">Smoothening using the Low Pass Gaussian Filter</a></li><li><a href="#6">Sharpening Using the High Pass Gaussian Filter</a></li><li><a href="#7">Removing the noise using Opening: Erosion followed by dilation</a></li><li><a href="#8">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 3</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+<span class="comment">% Institute: IIT Bhubaneswar</span>
+<span class="comment">% Date: 23.10.2020</span>
+<span class="comment">% Degree: Btech</span>
+<span class="comment">% Branch: Electronics and Communication</span>
+<span class="comment">% Roll Number: 17EC01041</span>
+</pre><h2 id="2">Creating a new environment</h2><pre class="codeinput">clc;
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+</pre><h2 id="3">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif'</span>);
+orig_fingerprint = rgb2gray(imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg'</span>));
+</pre><h2 id="4">Sharpening using the Laplacian Filter</h2><p>The image can be sharpened in both the time domain and the frequency domain. In this case we convert the Laplacian to the frequency domain sharpen it and then convert it back to the time domain via the inverse dft transform. We use the following in the frequency domain:</p><p><img src="Assignment_3_eq11614873675581657049.png" alt="$$H(u,v) = (1 + 4*\pi^{2}*(u^2 + v^2)(F(u,v))$$" style="width:260px;height:18px;"></p><pre class="codeinput"><span class="comment">% Calling the sharpening_with_laplacian_filter function</span>
+sharpened_lena_laplacian = sharpening_with_laplacian_filter(lena);
+
+<span class="comment">% Plotting the images</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Sharpening using Laplacian Filter'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(sharpened_lena_laplacian))));
+title(<span class="string">'Sharpening using the Laplacian Filter'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_3_01.png" alt=""> <h2 id="5">Smoothening using the Low Pass Gaussian Filter</h2><p>The images can be blurred via the frequency domain via the Low Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq15269255039620570406.png" alt="$$H(u,v) = exp^{\frac{-D(u,v)^2}{2*D_0^2}} * F(u,v)$$" style="width:183px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the low_pass_gaussian_filter_smoothening function</span>
+smoothened_lena = low_pass_gaussian_filter_smoothening(lena, 10);
+
+<span class="comment">% Plotting the images</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Smoothening using LPG Filter'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(smoothened_lena))));
+title(<span class="string">'Smoothening using the LPG Filter'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_3_02.png" alt=""> <h2 id="6">Sharpening Using the High Pass Gaussian Filter</h2><p>The images can be sharpened via the frequency domain via the High Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq09061519527603569477.png" alt="$$H(u,v) = (1 - exp^{\frac{-D(u,v)^2}{2*D_0^2}}) * F(u,v)$$" style="width:220px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the high_pass_gaussian_filter_sharpening function</span>
+sharpened_lena_hpg =  high_pass_gaussian_filter_sharpening(lena, 10);
+
+<span class="comment">% Plotting the images</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Sharpening using HPG Filter'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title(<span class="string">'Original Image'</span>);
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(sharpened_lena_hpg))));
+title(<span class="string">'Sharpening using the HPG Filter'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_3_03.png" alt=""> <h2 id="7">Removing the noise using Opening: Erosion followed by dilation</h2><p>Erosion and Dilation are operations that are done for basically removing unecessary protrusions and filling in holes. Closing is used for filling in holes and then resizing the it back to the original image. Opening is used for removing protrusions and resizing the images back to the original images. The equations for opening and closing are as follows:</p><p><img src="Assignment_3_eq16353196944734975760.png" alt="$$A \circ B = (A \ominus B) \oplus B$$" style="width:138px;height:15px;"></p><p><img src="Assignment_3_eq10096832067247136677.png" alt="$$A \bullet B = (A \oplus B) \ominus B$$" style="width:138px;height:15px;"></p><pre class="codeinput"><span class="comment">% Creating the structuring element</span>
+struct_elem = uint8([0, 1, 0; 1, 1, 1; 0, 1, 0]);
+
+<span class="comment">% Making the fingerprint image a binary image</span>
+fingerprint = uint8(orig_fingerprint&gt;128);
+
+<span class="comment">% Calling the erosion and dilation function</span>
+eroded_image = erosion(fingerprint, struct_elem);
+dilated_image = dilation(fingerprint, struct_elem);
+
+<span class="comment">% Closing and Dilation</span>
+<span class="comment">% Erosion and Dilation and are defined opposite here. That's because the</span>
+<span class="comment">% fingerprint is black and the outer region is white. Therefore, we have to</span>
+<span class="comment">% consider the opposite.</span>
+opening = dilation(uint8(erosion(fingerprint, struct_elem)), struct_elem);
+closing = erosion(uint8(dilation(fingerprint, struct_elem)), struct_elem);
+
+
+<span class="comment">% Plotting the images</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Erosion and Dilation'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(2,3,1)
+imshow(orig_fingerprint);
+title(<span class="string">'Original Image'</span>);
+
+subplot(2,3,2)
+imshow(mat2gray(fingerprint));
+title(<span class="string">'Binary Image'</span>);
+
+subplot(2,3,3)
+imshow((mat2gray(uint8(eroded_image))));
+title(<span class="string">'Eroded Image'</span>);
+
+subplot(2,3,4)
+imshow((mat2gray(uint8(dilated_image))));
+title(<span class="string">'Dilated Image'</span>);
+
+subplot(2,3,5)
+imshow((mat2gray(uint8(closing))));
+title(<span class="string">'Closing'</span>);
+
+subplot(2,3,6)
+imshow((mat2gray(uint8(opening))));
+title(<span class="string">'Opening'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_3_04.png" alt=""> <h2 id="8">Conclusion</h2><p>From these experiments we can see that we can perform smoothening as well as sharpening via the frequency domain. We can observe that sometimes it is easier to process the image in the frequency domain. Moroever, we can also see that we can use operations like opening and closing to embellish the images.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% IVP Assignment 3
+
+% Name: Chanakya Ajit Ekbote
+% Institute: IIT Bhubaneswar
+% Date: 23.10.2020
+% Degree: Btech
+% Branch: Electronics and Communication
+% Roll Number: 17EC01041
+
+%% Creating a new environment
+
+clc; 
+clear all;
+close all;
+
+%% Image Imports
+
+lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif');
+orig_fingerprint = rgb2gray(imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg'));
+
+%% Sharpening using the Laplacian Filter
+% The image can be sharpened in both the time domain and the frequency
+% domain. In this case we convert the Laplacian to the frequency domain 
+% sharpen it and then convert it back to the time domain via the inverse
+% dft transform. We use the following in the frequency domain:
+%
+% $$H(u,v) = (1 + 4*\pi^{2}*(u^2 + v^2)(F(u,v))$$
+
+% Calling the sharpening_with_laplacian_filter function
+sharpened_lena_laplacian = sharpening_with_laplacian_filter(lena);
+
+% Plotting the images
+figure('Name', 'Sharpening using Laplacian Filter', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title('Original Image');
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(sharpened_lena_laplacian))));
+title('Sharpening using the Laplacian Filter');
+
+%% Smoothening using the Low Pass Gaussian Filter
+% The images can be blurred via the frequency domain via the Low Pass
+% Gaussian Filter. The smoothened image can be obtained via the the IDFT
+% after filteration.
+%
+% $$H(u,v) = exp^{\frac{-D(u,v)^2}{2*D_0^2}} * F(u,v)$$
+ 
+% Calling the low_pass_gaussian_filter_smoothening function
+smoothened_lena = low_pass_gaussian_filter_smoothening(lena, 10);
+
+% Plotting the images
+figure('Name', 'Smoothening using LPG Filter', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title('Original Image');
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(smoothened_lena))));
+title('Smoothening using the LPG Filter');
+
+%% Sharpening Using the High Pass Gaussian Filter
+% The images can be sharpened via the frequency domain via the High Pass
+% Gaussian Filter. The smoothened image can be obtained via the the IDFT
+% after filteration.
+%
+% $$H(u,v) = (1 - exp^{\frac{-D(u,v)^2}{2*D_0^2}}) * F(u,v)$$ 
+
+% Calling the high_pass_gaussian_filter_sharpening function
+sharpened_lena_hpg =  high_pass_gaussian_filter_sharpening(lena, 10);
+
+% Plotting the images
+figure('Name', 'Sharpening using HPG Filter', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
+
+subplot(1,2,1)
+imshow(lena);
+title('Original Image');
+
+subplot(1,2,2)
+imshow((mat2gray(uint8(sharpened_lena_hpg))));
+title('Sharpening using the HPG Filter');
+
+%% Removing the noise using Opening: Erosion followed by dilation
+% Erosion and Dilation are operations that are done for basically removing
+% unecessary protrusions and filling in holes. Closing is used for filling
+% in holes and then resizing the it back to the original image. Opening is
+% used for removing protrusions and resizing the images back to the
+% original images. The equations for opening and closing are as follows:
+%
+% $$A \circ B = (A \ominus B) \oplus B$$ 
+%
+% $$A \bullet B = (A \oplus B) \ominus B$$ 
+
+% Creating the structuring element
+struct_elem = uint8([0, 1, 0; 1, 1, 1; 0, 1, 0]);
+
+% Making the fingerprint image a binary image
+fingerprint = uint8(orig_fingerprint>128);
+
+% Calling the erosion and dilation function
+eroded_image = erosion(fingerprint, struct_elem);
+dilated_image = dilation(fingerprint, struct_elem);
+
+% Closing and Dilation
+% Erosion and Dilation and are defined opposite here. That's because the 
+% fingerprint is black and the outer region is white. Therefore, we have to
+% consider the opposite.
+opening = dilation(uint8(erosion(fingerprint, struct_elem)), struct_elem);
+closing = erosion(uint8(dilation(fingerprint, struct_elem)), struct_elem);
+
+
+% Plotting the images
+figure('Name', 'Erosion and Dilation', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
+
+subplot(2,3,1)
+imshow(orig_fingerprint);
+title('Original Image');
+
+subplot(2,3,2)
+imshow(mat2gray(fingerprint));
+title('Binary Image');
+
+subplot(2,3,3)
+imshow((mat2gray(uint8(eroded_image))));
+title('Eroded Image');
+
+subplot(2,3,4)
+imshow((mat2gray(uint8(dilated_image))));
+title('Dilated Image');
+
+subplot(2,3,5)
+imshow((mat2gray(uint8(closing))));
+title('Closing');
+
+subplot(2,3,6)
+imshow((mat2gray(uint8(opening))));
+title('Opening');
+
+%% Conclusion
+% From these experiments we can see that we can perform smoothening as well
+% as sharpening via the frequency domain. We can observe that sometimes it
+% is easier to process the image in the frequency domain. Moroever, we can
+% also see that we can use operations like opening and closing to embellish
+% the images.
+
+##### SOURCE END #####
+--></body></html>

@@ -13,21 +13,22 @@ function [img] = erosion(image, struct_elem)
     % element then it meand A intersection B is true for the entire region.
     % Else it is false
     
-    img = zeros(size(image));
+    img = uint8(zeros(size(image)));
     [row_img, col_img] = size(image);
     [row_struct_elem, col_struct_elem] = size(struct_elem);
     
-    mid_row = uint8((row_struct_elem + 1) / 2);
-    mid_col = uint8((col_struct_elem + 1) / 2);
+    mid_row = double(uint8((row_struct_elem + 1) / 2));
+    mid_col = double(uint8((col_struct_elem + 1) / 2));
     sum_struct_elem = sum(sum(struct_elem));
+    
     
     for i = 1:(row_img - row_struct_elem + 1)
         for j = 1:(col_img - col_struct_elem + 1)
-            sum_ = image(i:i+row_struct_elem-1, j:j+col_struct_elem-1) ... 
+            sum_ = image(i:(i+row_struct_elem-1), j:(j+col_struct_elem-1)) ... 
                 .* struct_elem;
             sum_ = sum(sum(sum_));
-            if (sum_==sum_struct_elem)
-                img(i+mid_row-1, j+mid_col-1) = 1;
+            if (sum_ == sum_struct_elem)
+                img((i+mid_row-1), (j+mid_col-1)) = 1;
             end
         end
     end

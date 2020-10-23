@@ -16,8 +16,8 @@ function [img] = dilation(image, struct_elem)
     [row_img, col_img] = size(image);
     [row_struct_elem, col_struct_elem] = size(struct_elem);
     
-    mid_row = uint8((row_struct_elem + 1) / 2);
-    mid_col = uint8((col_struct_elem + 1) / 2);
+    mid_row = double(uint8((row_struct_elem + 1) / 2));
+    mid_col = double(uint8((col_struct_elem + 1) / 2));
     
     for i = 1:(row_img - row_struct_elem + 1)
         for j = 1:(col_img - col_struct_elem + 1)
@@ -29,4 +29,6 @@ function [img] = dilation(image, struct_elem)
             end
         end
     end
+    
+end
     
