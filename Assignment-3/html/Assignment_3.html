@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 3</a></li><li><a href="#2">Creating a new environment</a></li><li><a href="#3">Image Imports</a></li><li><a href="#4">Sharpening using the Laplacian Filter</a></li><li><a href="#5">Smoothening using the Low Pass Gaussian Filter</a></li><li><a href="#6">Sharpening Using the High Pass Gaussian Filter</a></li><li><a href="#7">Removing the noise using Opening: Erosion followed by dilation</a></li><li><a href="#8">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 3</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 3</a></li><li><a href="#2">Creating a new environment</a></li><li><a href="#3">Functions Created: sharpening_with_laplacian_filter</a></li><li><a href="#4">Functions Created: low_pass_gaussian_filter_smoothening</a></li><li><a href="#5">Functions Created: high_pass_gaussian_filter_sharpening</a></li><li><a href="#6">Functions Created: erosion</a></li><li><a href="#7">Functions Created: dilation</a></li><li><a href="#8">Image Imports</a></li><li><a href="#9">Sharpening using the Laplacian Filter</a></li><li><a href="#10">Smoothening using the Low Pass Gaussian Filter</a></li><li><a href="#11">Sharpening Using the High Pass Gaussian Filter</a></li><li><a href="#12">Removing the noise using Opening: Erosion followed by dilation</a></li><li><a href="#13">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 3</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
 <span class="comment">% Institute: IIT Bhubaneswar</span>
 <span class="comment">% Date: 23.10.2020</span>
 <span class="comment">% Degree: Btech</span>
@@ -76,9 +76,157 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </pre><h2 id="2">Creating a new environment</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2 id="3">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif'</span>);
+</pre><h2 id="3">Functions Created: sharpening_with_laplacian_filter</h2><pre class="language-matlab">
+<span class="comment">% Function that sharpens the image using Laplacian via the Frequency Domain</span>
+
+<span class="keyword">function</span> [img] = sharpening_with_laplacian_filter(image)
+    <span class="comment">% image: We assume that it is a grayscale image. </span>
+    
+    dft_image = fftshift(fft2(image));
+    [row, col] = size(dft_image);
+    mid_row = (1 + row) / 2;
+    mid_col = (1 + col) / 2;
+    filter = zeros(size(dft_image));
+    
+    <span class="comment">% Creates the laplacian filter for image sharpening.</span>
+    <span class="keyword">for</span> i = 1:row
+        <span class="keyword">for</span> j = 1:col
+            filter(i, j)  = 1 + 4*pi^2*((mid_row - i)^2 + (mid_col-j)^2);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% ifftshift shifts the fft2d back and then perform the idft. </span>
+    img = real(ifft2(ifftshift(filter .* double(dft_image))));
+    
+      
+
+</pre><h2 id="4">Functions Created: low_pass_gaussian_filter_smoothening</h2><pre class="language-matlab">
+<span class="comment">% Function that smoothes the image using a low pass gaussian filter</span>
+
+<span class="keyword">function</span> [img] = low_pass_gaussian_filter_smoothening(image, var)
+    <span class="comment">% image: We assume that it is a grayscale image.</span>
+    <span class="comment">% var: Gives the variance of the 2D gaussian distribution.</span>
+    
+    dft_image = fftshift(fft2(image));
+    [row, col] = size(dft_image);
+    mid_row = (1 + row) / 2;
+    mid_col = (1 + col) / 2;
+    filter = zeros(size(dft_image));
+    
+    <span class="comment">% Creates the low pass gaussian filter for smoothening.</span>
+    <span class="keyword">for</span> i = 1:row
+        <span class="keyword">for</span> j = 1:col
+            filter(i, j) = exp(-((mid_row - i)^2 + (mid_col-j)^2) / (2 * var^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% ifftshift shifts the fft2d back and then perform the idft. </span>
+    img = real(ifft2(ifftshift(filter .* dft_image)));
+    
+      
+
+</pre><h2 id="5">Functions Created: high_pass_gaussian_filter_sharpening</h2><pre class="language-matlab">
+<span class="comment">% Function that sharpens the image using a high pass gaussian filter</span>
+
+<span class="keyword">function</span> [img] = high_pass_gaussian_filter_sharpening(image, var)
+    <span class="comment">% image: We assume that it is a grayscale image.</span>
+    <span class="comment">% var: Gives the variance of the 2D gaussian distribution.</span>
+    
+    dft_image = fftshift(fft2(image));
+    [row, col] = size(dft_image);
+    mid_row = (1 + row) / 2;
+    mid_col = (1 + col) / 2;
+    filter = zeros(size(dft_image));
+    
+    <span class="comment">% Creates the high pass gaussian filter for sharpening.</span>
+    <span class="keyword">for</span> i = 1:row
+        <span class="keyword">for</span> j = 1:col
+            filter(i, j)  = 1- exp(-((mid_row - i)^2 + (mid_col-j)^2) <span class="keyword">...</span><span class="comment"> </span>
+                / (2 * var^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% ifftshift shifts the fft2d back and then perform the idft. </span>
+    img = real(ifft2(ifftshift(filter .* dft_image)));
+    
+      
+
+</pre><h2 id="6">Functions Created: erosion</h2><pre class="language-matlab">
+<span class="comment">% Function that performs the morphological operation erosion and returns </span>
+<span class="comment">% the processed image.</span>
+
+<span class="keyword">function</span> [img] = erosion(image, struct_elem)
+    <span class="comment">% image: Contains the binary image</span>
+    <span class="comment">% struct_elem: Contains the structuring element upon which the</span>
+    <span class="comment">% morphological operation is being done. The assumption is that the</span>
+    <span class="comment">% struct_elem is odd. </span>
+    
+    <span class="comment">% The logic is that if we take the structuring element and multiply it</span>
+    <span class="comment">% with the same window of the original image (element wise) and if the</span>
+    <span class="comment">% sum of that is equal to the sum of all the values in the structuring</span>
+    <span class="comment">% element then it meand A intersection B is true for the entire region.</span>
+    <span class="comment">% Else it is false</span>
+    
+    img = uint8(zeros(size(image)));
+    [row_img, col_img] = size(image);
+    [row_struct_elem, col_struct_elem] = size(struct_elem);
+    
+    mid_row = double(uint8((row_struct_elem + 1) / 2));
+    mid_col = double(uint8((col_struct_elem + 1) / 2));
+    sum_struct_elem = sum(sum(struct_elem));
+    
+    
+    <span class="keyword">for</span> i = 1:(row_img - row_struct_elem + 1)
+        <span class="keyword">for</span> j = 1:(col_img - col_struct_elem + 1)
+            sum_ = image(i:(i+row_struct_elem-1), j:(j+col_struct_elem-1)) <span class="keyword">...</span><span class="comment"> </span>
+                .* struct_elem;
+            sum_ = sum(sum(sum_));
+            <span class="keyword">if</span> (sum_ == sum_struct_elem)
+                img((i+mid_row-1), (j+mid_col-1)) = 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+
+</pre><h2 id="7">Functions Created: dilation</h2><pre class="language-matlab">
+<span class="comment">% Function that performs the morphological operation dilation and returns </span>
+<span class="comment">% the processed image.</span>
+
+<span class="keyword">function</span> [img] = dilation(image, struct_elem)
+    <span class="comment">% image: Contains the binary image</span>
+    <span class="comment">% struct_elem: Contains the structuring element upon which the</span>
+    <span class="comment">% morphological operation is being done. The assumption is that the</span>
+    <span class="comment">% struct_elem is odd. </span>
+    
+    <span class="comment">% The logic is that if we take the structuring element and multiply it</span>
+    <span class="comment">% with the same window of the original image (element wise) and if the</span>
+    <span class="comment">% sum of that is greater than 0, then it means that A intersection B</span>
+    <span class="comment">% lies in A. </span>
+    
+    img = zeros(size(image));
+    [row_img, col_img] = size(image);
+    [row_struct_elem, col_struct_elem] = size(struct_elem);
+    
+    mid_row = double(uint8((row_struct_elem + 1) / 2));
+    mid_col = double(uint8((col_struct_elem + 1) / 2));
+    
+    <span class="keyword">for</span> i = 1:(row_img - row_struct_elem + 1)
+        <span class="keyword">for</span> j = 1:(col_img - col_struct_elem + 1)
+            sum_ = image(i:i+row_struct_elem-1, j:j+col_struct_elem-1) <span class="keyword">...</span><span class="comment"> </span>
+                .* struct_elem;
+            sum_ = sum(sum(sum_));
+            <span class="keyword">if</span> (sum_ &gt; 0)
+                img(i+mid_row-1, j+mid_col-1) = 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+<span class="keyword">end</span>
+    
+
+</pre><h2 id="8">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif'</span>);
 orig_fingerprint = rgb2gray(imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg'</span>));
-</pre><h2 id="4">Sharpening using the Laplacian Filter</h2><p>The image can be sharpened in both the time domain and the frequency domain. In this case we convert the Laplacian to the frequency domain sharpen it and then convert it back to the time domain via the inverse dft transform. We use the following in the frequency domain:</p><p><img src="Assignment_3_eq11614873675581657049.png" alt="$$H(u,v) = (1 + 4*\pi^{2}*(u^2 + v^2)(F(u,v))$$" style="width:260px;height:18px;"></p><pre class="codeinput"><span class="comment">% Calling the sharpening_with_laplacian_filter function</span>
+</pre><h2 id="9">Sharpening using the Laplacian Filter</h2><p>The image can be sharpened in both the time domain and the frequency domain. In this case we convert the Laplacian to the frequency domain sharpen it and then convert it back to the time domain via the inverse dft transform. We use the following in the frequency domain:</p><p><img src="Assignment_3_eq11614873675581657049.png" alt="$$H(u,v) = (1 + 4*\pi^{2}*(u^2 + v^2)(F(u,v))$$" style="width:260px;height:18px;"></p><pre class="codeinput"><span class="comment">% Calling the sharpening_with_laplacian_filter function</span>
 sharpened_lena_laplacian = sharpening_with_laplacian_filter(lena);
 
 <span class="comment">% Plotting the images</span>
@@ -92,7 +240,7 @@ title(<span class="string">'Original Image'</span>);
 subplot(1,2,2)
 imshow((mat2gray(uint8(sharpened_lena_laplacian))));
 title(<span class="string">'Sharpening using the Laplacian Filter'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_3_01.png" alt=""> <h2 id="5">Smoothening using the Low Pass Gaussian Filter</h2><p>The images can be blurred via the frequency domain via the Low Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq15269255039620570406.png" alt="$$H(u,v) = exp^{\frac{-D(u,v)^2}{2*D_0^2}} * F(u,v)$$" style="width:183px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the low_pass_gaussian_filter_smoothening function</span>
+</pre><img vspace="5" hspace="5" src="Assignment_3_01.png" alt=""> <h2 id="10">Smoothening using the Low Pass Gaussian Filter</h2><p>The images can be blurred via the frequency domain via the Low Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq15269255039620570406.png" alt="$$H(u,v) = exp^{\frac{-D(u,v)^2}{2*D_0^2}} * F(u,v)$$" style="width:183px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the low_pass_gaussian_filter_smoothening function</span>
 smoothened_lena = low_pass_gaussian_filter_smoothening(lena, 10);
 
 <span class="comment">% Plotting the images</span>
@@ -106,7 +254,7 @@ title(<span class="string">'Original Image'</span>);
 subplot(1,2,2)
 imshow((mat2gray(uint8(smoothened_lena))));
 title(<span class="string">'Smoothening using the LPG Filter'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_3_02.png" alt=""> <h2 id="6">Sharpening Using the High Pass Gaussian Filter</h2><p>The images can be sharpened via the frequency domain via the High Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq09061519527603569477.png" alt="$$H(u,v) = (1 - exp^{\frac{-D(u,v)^2}{2*D_0^2}}) * F(u,v)$$" style="width:220px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the high_pass_gaussian_filter_sharpening function</span>
+</pre><img vspace="5" hspace="5" src="Assignment_3_02.png" alt=""> <h2 id="11">Sharpening Using the High Pass Gaussian Filter</h2><p>The images can be sharpened via the frequency domain via the High Pass Gaussian Filter. The smoothened image can be obtained via the the IDFT after filteration.</p><p><img src="Assignment_3_eq09061519527603569477.png" alt="$$H(u,v) = (1 - exp^{\frac{-D(u,v)^2}{2*D_0^2}}) * F(u,v)$$" style="width:220px;height:29px;"></p><pre class="codeinput"><span class="comment">% Calling the high_pass_gaussian_filter_sharpening function</span>
 sharpened_lena_hpg =  high_pass_gaussian_filter_sharpening(lena, 10);
 
 <span class="comment">% Plotting the images</span>
@@ -120,7 +268,7 @@ title(<span class="string">'Original Image'</span>);
 subplot(1,2,2)
 imshow((mat2gray(uint8(sharpened_lena_hpg))));
 title(<span class="string">'Sharpening using the HPG Filter'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_3_03.png" alt=""> <h2 id="7">Removing the noise using Opening: Erosion followed by dilation</h2><p>Erosion and Dilation are operations that are done for basically removing unecessary protrusions and filling in holes. Closing is used for filling in holes and then resizing the it back to the original image. Opening is used for removing protrusions and resizing the images back to the original images. The equations for opening and closing are as follows:</p><p><img src="Assignment_3_eq16353196944734975760.png" alt="$$A \circ B = (A \ominus B) \oplus B$$" style="width:138px;height:15px;"></p><p><img src="Assignment_3_eq10096832067247136677.png" alt="$$A \bullet B = (A \oplus B) \ominus B$$" style="width:138px;height:15px;"></p><pre class="codeinput"><span class="comment">% Creating the structuring element</span>
+</pre><img vspace="5" hspace="5" src="Assignment_3_03.png" alt=""> <h2 id="12">Removing the noise using Opening: Erosion followed by dilation</h2><p>Erosion and Dilation are operations that are done for basically removing unecessary protrusions and filling in holes. Closing is used for filling in holes and then resizing the it back to the original image. Opening is used for removing protrusions and resizing the images back to the original images. The equations for opening and closing are as follows:</p><p><img src="Assignment_3_eq16353196944734975760.png" alt="$$A \circ B = (A \ominus B) \oplus B$$" style="width:138px;height:15px;"></p><p><img src="Assignment_3_eq10096832067247136677.png" alt="$$A \bullet B = (A \oplus B) \ominus B$$" style="width:138px;height:15px;"></p><pre class="codeinput"><span class="comment">% Creating the structuring element</span>
 struct_elem = uint8([0, 1, 0; 1, 1, 1; 0, 1, 0]);
 
 <span class="comment">% Making the fingerprint image a binary image</span>
@@ -165,7 +313,7 @@ title(<span class="string">'Closing'</span>);
 subplot(2,3,6)
 imshow((mat2gray(uint8(opening))));
 title(<span class="string">'Opening'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_3_04.png" alt=""> <h2 id="8">Conclusion</h2><p>From these experiments we can see that we can perform smoothening as well as sharpening via the frequency domain. We can observe that sometimes it is easier to process the image in the frequency domain. Moroever, we can also see that we can use operations like opening and closing to embellish the images.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="Assignment_3_04.png" alt=""> <h2 id="13">Conclusion</h2><p>From these experiments we can see that we can perform smoothening as well as sharpening via the frequency domain. We can observe that sometimes it is easier to process the image in the frequency domain. Moroever, we can also see that we can use operations like opening and closing to embellish the images.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% IVP Assignment 3
 
@@ -181,6 +329,21 @@ title(<span class="string">'Opening'</span>);
 clc; 
 clear all;
 close all;
+
+%% Functions Created: sharpening_with_laplacian_filter
+% <include>sharpening_with_laplacian_filter.m</include>
+
+%% Functions Created: low_pass_gaussian_filter_smoothening
+% <include>low_pass_gaussian_filter_smoothening.m</include>
+
+%% Functions Created: high_pass_gaussian_filter_sharpening
+% <include>high_pass_gaussian_filter_sharpening.m</include>
+
+%% Functions Created: erosion
+% <include>erosion.m</include>
+
+%% Functions Created: dilation
+% <include>dilation.m</include>
 
 %% Image Imports
 

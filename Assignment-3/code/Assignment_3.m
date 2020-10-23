@@ -13,6 +13,21 @@ clc;
 clear all;
 close all;
 
+%% Functions Created: sharpening_with_laplacian_filter
+% <include>sharpening_with_laplacian_filter.m</include>
+
+%% Functions Created: low_pass_gaussian_filter_smoothening
+% <include>low_pass_gaussian_filter_smoothening.m</include>
+
+%% Functions Created: high_pass_gaussian_filter_sharpening
+% <include>high_pass_gaussian_filter_sharpening.m</include>
+
+%% Functions Created: erosion
+% <include>erosion.m</include>
+
+%% Functions Created: dilation
+% <include>dilation.m</include>
+
 %% Image Imports
 
 lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif');
