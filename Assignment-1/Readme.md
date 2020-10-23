@@ -1,4 +1,4 @@
-# Assignment 1
+# Assignment-1
 
 ## Goals for the Assignment
 - Seperate an RGB image into its constituent colours and then convert the image to other formats.
