@@ -7,5 +7,5 @@
 - Performing Erosion, Dilation, Opening and Closing.
 
 ## Resources
-- [Frequency Domain Processing Techniques](Frequency Domain Processing Techniques)
+- [Frequency Domain Processing Techniques](https://www.youtube.com/watch?v=JfrcMYBouJE)
 - [Morphological Processing-Erosion & Dilation](https://www.youtube.com/watch?v=7-FZBgrW4RE)
