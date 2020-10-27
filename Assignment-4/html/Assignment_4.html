@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Assignment_4</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-25"><meta name="DC.source" content="Assignment_4.m"><style type="text/css">
+      --><title>Assignment_4</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-27"><meta name="DC.source" content="Assignment_4.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 4</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Image Imports</a></li><li><a href="#4">Adding Noise to the image</a></li><li><a href="#5">Using the Median Filter</a></li><li><a href="#6">Using the Contraharmonic Filter</a></li><li><a href="#7">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 4</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 4</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created: median_filter</a></li><li><a href="#4">Functions Created: contraharmonic_filter</a></li><li><a href="#5">Image Imports</a></li><li><a href="#6">Adding Noise to the image</a></li><li><a href="#7">Using the Median Filter</a></li><li><a href="#8">Using the Contraharmonic Filter</a></li><li><a href="#9">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 4</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
 <span class="comment">% Institute: IIT, Bhubaneswar</span>
 <span class="comment">% Date: 24.10.2020</span>
 <span class="comment">% Degree: Btech</span>
@@ -76,9 +76,67 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </pre><h2 id="2">Creating a new environment.</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2 id="3">Image Imports</h2><pre class="codeinput">orig_fingerprint = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg'</span>);
+</pre><h2 id="3">Functions Created: median_filter</h2><pre class="language-matlab">
+<span class="comment">% Function that returns the fedian Filtered Image.</span>
+
+<span class="keyword">function</span> [img] = median_filter(image, window_row, window_col)
+    <span class="comment">% image: The orignal image.</span>
+    <span class="comment">% window_row: The row size of the window.</span>
+    <span class="comment">% window_col: The column size of the window.</span>
+    <span class="comment">% Note: the window is assumed to have odd rows and columns.</span>
+
+    [row_img, col_img] = size(image);
+    img = zeros(row_img, col_img);
+    
+    mid_row = double(uint8((window_row + 1) / 2));
+    mid_col = double(uint8((window_col + 1) / 2));
+    
+    <span class="comment">% Loop that gets the median of the window.</span>
+    <span class="keyword">for</span> i = 1:(row_img - window_row + 1)
+        <span class="keyword">for</span> j = 1:(col_img - window_col + 1)
+            window_array = reshape(image(i:i+window_row-1, j:j+window_col-1 <span class="keyword">...</span>
+                ), 1, []);
+            median_val = median(window_array);
+            img(i+mid_row-1, j+mid_col-1) = median_val;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+
+</pre><h2 id="4">Functions Created: contraharmonic_filter</h2><pre class="language-matlab">
+<span class="comment">% Function that uses a contraharmonic filter to filter the image.</span>
+
+<span class="keyword">function</span> [img] = contraharmonic_filter(image, filter_row, filter_col, q)
+    <span class="comment">% image: The orignal image.</span>
+    <span class="comment">% window_row: The row size of the window.</span>
+    <span class="comment">% window_col: The column size of the window.</span>
+    <span class="comment">% q: Q value of the contraharmonic filter.</span>
+    <span class="comment">% Note: the window is assumed to have odd rows and columns.</span>
+
+    
+    [row_img, col_img] = size(image);
+    img = zeros(row_img, col_img);
+    
+    mid_row = double(uint8((filter_row + 1) / 2));
+    mid_col = double(uint8((filter_col + 1) / 2));
+    
+    <span class="comment">% Loop that gets the contraharmonic value of the window.</span>
+    <span class="keyword">for</span> i = 1:(row_img - filter_row + 1)
+        <span class="keyword">for</span> j = 1:(col_img - filter_col + 1)
+            window_array = double(reshape(image(i:i+filter_row-1, j:j+filter_col-1 <span class="keyword">...</span>
+                ), 1, []));
+            num = 0;
+            den = 0;
+            <span class="keyword">for</span> k = 1:(filter_row*filter_col)
+                num = num + window_array(1, k)^(q+1);
+                den = den + window_array(1, k)^(q);
+            <span class="keyword">end</span>
+            img(i+mid_row-1, j+mid_col-1) = num / den;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+</pre><h2 id="5">Image Imports</h2><pre class="codeinput">orig_fingerprint = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg'</span>);
 fingerprint = rgb2gray(orig_fingerprint);
-</pre><h2 id="4">Adding Noise to the image</h2><p>Noise is added to the image via the following distribution:</p><p><img src="Assignment_4_eq07707777609644870657.png" alt="$$P(a)$$   $$if$$   $$a$$" style="width:62px;height:15px;"></p><p><img src="Assignment_4_eq01187478786077233178.png" alt="$$P(b)$$   $$if$$   $$b$$" style="width:59px;height:15px;"></p><p><img src="Assignment_4_eq13395915410431106165.png" alt="$$else$$   $$1-P(a)-P(b)$$" style="width:131px;height:15px;"></p><pre class="codeinput">[row, col] = size(fingerprint);
+</pre><h2 id="6">Adding Noise to the image</h2><p>Noise is added to the image via the following distribution:</p><p><img src="Assignment_4_eq07707777609644870657.png" alt="$$P(a)$$   $$if$$   $$a$$" style="width:62px;height:15px;"></p><p><img src="Assignment_4_eq01187478786077233178.png" alt="$$P(b)$$   $$if$$   $$b$$" style="width:59px;height:15px;"></p><p><img src="Assignment_4_eq13395915410431106165.png" alt="$$else$$   $$1-P(a)-P(b)$$" style="width:131px;height:15px;"></p><pre class="codeinput">[row, col] = size(fingerprint);
 noise = randi(255, row, col);
 noisy_image = fingerprint;
 noisy_image(noise&lt;=15)=0;
@@ -95,7 +153,7 @@ title(<span class="string">'Original Image'</span>);
 subplot(1, 2, 2)
 imshow(mat2gray(noisy_image));
 title(<span class="string">'Salt and Pepper added Noisy Image'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_4_01.png" alt=""> <h2 id="5">Using the Median Filter</h2><p>The median filtered image is obtained by the following expression:</p><p><img src="Assignment_4_eq11560133677232014886.png" alt="$$f(x,y) = median_{(s,t) \in S_{x,y}}(g(s,t))$$" style="width:202px;height:18px;"></p><pre class="codeinput">median_filtered_image = median_filter(noisy_image, 3, 3);
+</pre><img vspace="5" hspace="5" src="Assignment_4_01.png" alt=""> <h2 id="7">Using the Median Filter</h2><p>The median filtered image is obtained by the following expression:</p><p><img src="Assignment_4_eq11560133677232014886.png" alt="$$f(x,y) = median_{(s,t) \in S_{x,y}}(g(s,t))$$" style="width:202px;height:18px;"></p><pre class="codeinput">median_filtered_image = median_filter(noisy_image, 3, 3);
 
 figure(<span class="string">'Name'</span>, <span class="string">'Median Filtering'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
     <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
@@ -107,7 +165,7 @@ title(<span class="string">'Salt and Pepper added Noisy Image'</span>);
 subplot(1, 2, 2)
 imshow(mat2gray(median_filtered_image));
 title(<span class="string">'Median Filtered Image'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_4_02.png" alt=""> <h2 id="6">Using the Contraharmonic Filter</h2><p>The contraharmonic filtered image is obtained via the following expression:</p><p><img src="Assignment_4_eq05592496726114701311.png" alt="$$f(x,y) = \frac{\sum_{(s,t) \in S_{x,y}}^{} g(s,t)^{(Q+1)}}{\sum_{(s,t) \in S_{x,y}}^{} g(s,t)^{(Q)}}$$" style="width:193px;height:44px;"></p><pre class="codeinput">contraharmonic_image_pos = contraharmonic_filter(noisy_image, 3, 3, 1);
+</pre><img vspace="5" hspace="5" src="Assignment_4_02.png" alt=""> <img vspace="5" hspace="5" src="Assignment_4_03.png" alt=""> <h2 id="8">Using the Contraharmonic Filter</h2><p>The contraharmonic filtered image is obtained via the following expression:</p><p><img src="Assignment_4_eq05592496726114701311.png" alt="$$f(x,y) = \frac{\sum_{(s,t) \in S_{x,y}}^{} g(s,t)^{(Q+1)}}{\sum_{(s,t) \in S_{x,y}}^{} g(s,t)^{(Q)}}$$" style="width:193px;height:44px;"></p><pre class="codeinput">contraharmonic_image_pos = contraharmonic_filter(noisy_image, 3, 3, 1);
 contraharmonic_image_neg = contraharmonic_filter(noisy_image, 3, 3, -1);
 
 figure(<span class="string">'Name'</span>, <span class="string">'Contraharmonic Filtering'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
@@ -124,7 +182,7 @@ title(<span class="string">'Contraharmonic Filtering (Q=1)'</span>);
 subplot(1, 3, 3)
 imshow(mat2gray(contraharmonic_image_neg));
 title(<span class="string">'Contraharmonic Filtering (Q=-1)'</span>);
-</pre><img vspace="5" hspace="5" src="Assignment_4_03.png" alt=""> <h2 id="7">Conclusion</h2><p>Through this assignment, we observed how salt and pepper noise can be generated. We also observerved that the median filter is useful for elimating salt and pepper noise and the contraharmonic filter with a positive Q value elminates only pepper noise and with a negative Q value, elimanates only salt noise.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="Assignment_4_04.png" alt=""> <h2 id="9">Conclusion</h2><p>Through this assignment, we observed how salt and pepper noise can be generated. We also observerved that the median filter is useful for elimating salt and pepper noise and the contraharmonic filter with a positive Q value elminates only pepper noise and with a negative Q value, elimanates only salt noise.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% IVP Assignment 4
 
@@ -140,6 +198,12 @@ title(<span class="string">'Contraharmonic Filtering (Q=-1)'</span>);
 clc; 
 clear all;
 close all;
+
+%% Functions Created: median_filter
+% <include>median_filter.m</include>
+
+%% Functions Created: contraharmonic_filter
+% <include>contraharmonic_filter.m</include>
 
 %% Image Imports
 

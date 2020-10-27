@@ -13,6 +13,12 @@ clc;
 clear all;
 close all;
 
+%% Functions Created: median_filter
+% <include>median_filter.m</include>
+
+%% Functions Created: contraharmonic_filter
+% <include>contraharmonic_filter.m</include>
+
 %% Image Imports
 
 orig_fingerprint = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\fingerprint.jpg');
