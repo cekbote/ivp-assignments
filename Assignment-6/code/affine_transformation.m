@@ -30,7 +30,6 @@ function [img] = affine_transformation(image, T)
     
     img = zeros(max_x-min_x, max_y-min_y);
     
-    size(img)
     % Finds out if you need to add an offset if negative values are being
     % generated. If only positive values are being generated then there is
     % no need for an offset.
@@ -43,4 +42,6 @@ function [img] = affine_transformation(image, T)
             img(offset_mat(1) + shift_x, offset_mat(2) + shift_y) = ...
                 image(i, j);
         end
-    end    
+    end
+    
+    img = mat2gray(img);

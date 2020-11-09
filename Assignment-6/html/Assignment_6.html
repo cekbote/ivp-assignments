@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 6</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created: affine_transformation</a></li><li><a href="#4">Image Imports</a></li></ul></div><h2 id="1">IVP Assignment 6</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 6</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created: affine_transformation</a></li><li><a href="#4">Image Imports</a></li><li><a href="#5">Affine Transformations</a></li><li><a href="#6">Scaling an image</a></li><li><a href="#7">Rotating the Image</a></li><li><a href="#8">Rotating and Scaling an Image</a></li><li><a href="#9">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 6</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
 <span class="comment">% Institute: Indian Institute of Technology Bhubaneswar</span>
 <span class="comment">% Date: 09.11.2020</span>
 <span class="comment">% Degree: B.Tech</span>
@@ -76,27 +76,110 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </pre><h2 id="2">Creating a new environment.</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2 id="3">Functions Created: affine_transformation</h2><p><img src="Assignment_6_eq12331407756953160334.png" alt="$$ A =   \pmatrix{sin(\theta) &amp; 2 \cr 3 &amp; 4} * \pmatrix{sin(\theta) &amp; 2 \cr 3 &amp; 4}$$" style="width:217px;height:36px;"></p><h2 id="4">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif'</span>);
+</pre><h2 id="3">Functions Created: affine_transformation</h2><pre class="language-matlab">
+<span class="comment">% Function that performs an affine transformation on an image.</span>
 
+<span class="keyword">function</span> [img] = affine_transformation(image, T)
+    
+    <span class="comment">% image: Input Image.</span>
+    <span class="comment">% T: Transformation Matrix (3x3).</span>
+    
+    [row, col] = size(image);
+    
+    <span class="comment">% Computing the New Image Dimensions</span>
+    <span class="comment">% The logic is that you traverse the entire array and get the minimum</span>
+    <span class="comment">% and maximum values that the x, y of the original image can be</span>
+    <span class="comment">% transformed to. Then you know the range and can compute the</span>
+    <span class="comment">% dimensions of the new image accordingly.</span>
+    
+    min_x = 0;
+    max_x = 0;
+    min_y = 0;
+    max_y = 0;
+    
+    <span class="keyword">for</span> i=1:row
+        <span class="keyword">for</span> j=1:col
+            offset_mat = round([i, j, 1] * T);
+            min_x = min(offset_mat(1), min_x);
+            max_x = max(offset_mat(1), max_x);
+            min_y = min(offset_mat(2), min_y);
+            max_y = max(offset_mat(2), max_y);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>  
+    
+    img = zeros(max_x-min_x, max_y-min_y);
+    
+    <span class="comment">% Finds out if you need to add an offset if negative values are being</span>
+    <span class="comment">% generated. If only positive values are being generated then there is</span>
+    <span class="comment">% no need for an offset.</span>
+    shift_x = (1 + abs(min_x))*(min_x&lt;0);
+    shift_y = (1 + abs(min_y))*(min_y&lt;0);
+    
+    <span class="keyword">for</span> i=1:row
+        <span class="keyword">for</span> j=1:col
+            offset_mat = round([i, j, 1] * T);
+            img(offset_mat(1) + shift_x, offset_mat(2) + shift_y) = <span class="keyword">...</span>
+                image(i, j);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    img = mat2gray(img);
 
-T = [3,0,0;0,4,0;0,0,1];
+</pre><h2 id="4">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-6\images\lena_gray_256.tif'</span>);
+</pre><h2 id="5">Affine Transformations</h2><p>An affine transformation is a linear transformation of the image where the image can be rotated, translated, sheared, enlarged and shrunk. All of these operations can be done via matrix multiplications. The general expression is as follows:</p><p><img src="Assignment_6_eq15746547005227599627.png" alt="$$ (x,y) = Trans(u,v) $$" style="width:126px;height:15px;"></p><p>In the equation above, Trans is an affine transformation, u and v are the pixel positions of the original image and x and y are the pixel positions of the new image.</p><p>The general expression for affine transformations using matrices is as follows:</p><p><img src="Assignment_6_eq09059460818981273582.png" alt="$$ \pmatrix{x &amp; y &amp; 1} = \pmatrix{w &amp; z &amp; 1} * T $$" style="width:184px;height:15px;"></p><p>Note that this T can be changed depending on desire of the user. If the user would like to enlarge or shrink the image, the following transformation matrix can be used:</p><p><img src="Assignment_6_eq03759546380931079328.png" alt="$$ T = \pmatrix{a &amp; 0 &amp; 0 \cr 0 &amp; b &amp; 0 \cr 0 &amp; 0 &amp; 1} $$" style="width:109px;height:54px;"></p><p>Note that if the constants <img src="Assignment_6_eq05508344529756732484.png" alt="$a$" style="width:7px;height:7px;">, <img src="Assignment_6_eq02044268985122151499.png" alt="$b$" style="width:6px;height:11px;"> are above 1, we are expanding the image, and if they are less than 1 we are shrinking the image.</p><p>To rotate the image, the following Transformation Matrix can be used:</p><p><img src="Assignment_6_eq08369864234092202765.png" alt="$$ T = \pmatrix{cos(\theta) &amp; sin(\theta) &amp; 0 \cr -sin(\theta)&amp; cos(\theta)&#xA;&amp; 0 \cr 0 &amp; 0 &amp; 1} $$" style="width:184px;height:54px;"></p><h2 id="6">Scaling an image</h2><pre class="codeinput"><span class="comment">% Transformation Matrix</span>
+T = [1.5, 0, 0;
+       0, 2, 0;
+       0, 0, 1];
 
-theta=75;
-R_mat=[cosd(theta),sind(theta),0;-1*sind(theta),cosd(theta),0;0,0,1];
+<span class="comment">% Calling the affine_transformation function</span>
+scaled_image = affine_transformation(lena, T);
 
-x = affine_transformation(affine_transformation(lena, R_mat), T);
-imshow(mat2gray(x));
-</pre><pre class="codeoutput">
-ans =
+<span class="comment">% Plotting the affine transformation results</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Image Scaling'</span>, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+    <span class="string">'outerposition'</span>, [0 0 1 1]);
 
-   312   314
+subplot(1, 2, 1)
+imshow(lena);
+title(<span class="string">'Orginal Image'</span>);
 
+subplot(1, 2, 2)
+imshow(scaled_image);
+title(<span class="string">'Scaled Image'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_6_01.png" alt=""> <h2 id="7">Rotating the Image</h2><pre class="codeinput"><span class="comment">% Transformation Matrix</span>
+theta = 100;
+R = [ cosd(theta), sind(theta), 0;
+     -sind(theta), cosd(theta), 0;
+                 0,          0, 1];
 
-ans =
+<span class="comment">% Calling the affine_transformation function</span>
+rotated_image = affine_transformation(lena, R);
 
-         939        1256
+<span class="comment">% Plotting the affine transformation results</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Rotated Image'</span>, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+    <span class="string">'outerposition'</span>, [0 0 1 1]);
 
-</pre><img vspace="5" hspace="5" src="Assignment_6_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+subplot(1, 2, 1)
+imshow(lena);
+title(<span class="string">'Orginal Image'</span>);
+
+subplot(1, 2, 2)
+imshow(rotated_image);
+title(<span class="string">'Rotated Image'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_6_02.png" alt=""> <h2 id="8">Rotating and Scaling an Image</h2><pre class="codeinput"><span class="comment">% Calling the affine_transformation function</span>
+scaled_and_rotated_image = affine_transformation(scaled_image, R);
+
+<span class="comment">% Plotting the affine transformation results</span>
+figure(<span class="string">'Name'</span>, <span class="string">'Scaling and Rotating'</span>, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+    <span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(1, 2, 1)
+imshow(lena);
+title(<span class="string">'Orginal Image'</span>);
+
+subplot(1, 2, 2)
+imshow(scaled_and_rotated_image);
+title(<span class="string">'Scaled and Rotated Image'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_6_03.png" alt=""> <h2 id="9">Conclusion</h2><p>Through this experiment, we can see that via affine transformations we can rotate, translate, shrink, enlarge and shear image via simple linear transformations. This is advantage as linear transforms are very simple and require very little computational power. These transforms are essentail when we want to compare images of of different orientations. An example of that can be comparing two satellite images of India over a span of 10 years. However, when a sattelite takes an image there is no guarantee whether the orinetation would be the same as of that of the previous image. In such circumstances we would have to change the orientation to make sure that an easy comparision is possible.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% IVP Assignment 6
 
@@ -114,19 +197,115 @@ clear all;
 close all;
 
 %% Functions Created: affine_transformation
-% $$ A =   \pmatrix{sin(\theta) & 2 \cr 3 & 4} * \pmatrix{sin(\theta) & 2 \cr 3 & 4}$$
+% <include>affine_transformation.m</include>
 
 %% Image Imports
 
-lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif');
+lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-6\images\lena_gray_256.tif');
 
+%% Affine Transformations
+% An affine transformation is a linear transformation of the image where
+% the image can be rotated, translated, sheared, enlarged and shrunk. All
+% of these operations can be done via matrix multiplications. The general
+% expression is as follows: 
+% 
+% $$ (x,y) = Trans(u,v) $$
+%
+% In the equation above, Trans is an affine transformation, u and v are the
+% pixel positions of the original image and x and y are the pixel positions
+% of the new image.
+%
+% The general expression for affine transformations using matrices is as
+% follows:
+%
+% $$ \pmatrix{x & y & 1} = \pmatrix{w & z & 1} * T $$
+%
+% Note that this T can be changed depending on desire of the user. If the
+% user would like to enlarge or shrink the image, the following
+% transformation matrix can be used:
+%
+% $$ T = \pmatrix{a & 0 & 0 \cr 0 & b & 0 \cr 0 & 0 & 1} $$
+%
+% Note that if the constants $a$, $b$ are above 1, we are expanding the 
+% image, and if they are less than 1 we are shrinking the image.
+%
+% To rotate the image, the following Transformation Matrix can be used:
+%
+% $$ T = \pmatrix{cos(\theta) & sin(\theta) & 0 \cr -sin(\theta)& cos(\theta) 
+% & 0 \cr 0 & 0 & 1} $$
 
-T = [3,0,0;0,4,0;0,0,1];
+%% Scaling an image
 
-theta=75;
-R_mat=[cosd(theta),sind(theta),0;-1*sind(theta),cosd(theta),0;0,0,1];
+% Transformation Matrix
+T = [1.5, 0, 0;
+       0, 2, 0;
+       0, 0, 1];
+ 
+% Calling the affine_transformation function
+scaled_image = affine_transformation(lena, T);
 
-x = affine_transformation(affine_transformation(lena, R_mat), T);
-imshow(mat2gray(x));
+% Plotting the affine transformation results
+figure('Name', 'Image Scaling', 'units', 'normalized', ... 
+    'outerposition', [0 0 1 1]);
+
+subplot(1, 2, 1)
+imshow(lena);
+title('Orginal Image');
+
+subplot(1, 2, 2)
+imshow(scaled_image);
+title('Scaled Image');
+
+%% Rotating the Image
+
+% Transformation Matrix
+theta = 100;
+R = [ cosd(theta), sind(theta), 0;
+     -sind(theta), cosd(theta), 0;
+                 0,          0, 1];
+ 
+% Calling the affine_transformation function
+rotated_image = affine_transformation(lena, R);
+
+% Plotting the affine transformation results
+figure('Name', 'Rotated Image', 'units', 'normalized', ... 
+    'outerposition', [0 0 1 1]);
+
+subplot(1, 2, 1)
+imshow(lena);
+title('Orginal Image');
+
+subplot(1, 2, 2)
+imshow(rotated_image);
+title('Rotated Image');
+
+%% Rotating and Scaling an Image
+
+% Calling the affine_transformation function
+scaled_and_rotated_image = affine_transformation(scaled_image, R);
+
+% Plotting the affine transformation results
+figure('Name', 'Scaling and Rotating', 'units', 'normalized', ... 
+    'outerposition', [0 0 1 1]);
+
+subplot(1, 2, 1)
+imshow(lena);
+title('Orginal Image');
+
+subplot(1, 2, 2)
+imshow(scaled_and_rotated_image);
+title('Scaled and Rotated Image');
+
+%% Conclusion
+% Through this experiment, we can see that via affine transformations we
+% can rotate, translate, shrink, enlarge and shear image via simple linear
+% transformations. This is advantage as linear transforms are very simple
+% and require very little computational power. These transforms are
+% essentail when we want to compare images of of different orientations. An
+% example of that can be comparing two satellite images of India over a 
+% span of 10 years. However, when a sattelite takes an image there is no
+% guarantee whether the orinetation would be the same as of that of the
+% previous image. In such circumstances we would have to change the
+% orientation to make sure that an easy comparision is possible.
 ##### SOURCE END #####
 --></body></html>
