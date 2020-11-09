@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Assignment_5</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-09"><meta name="DC.source" content="Assignment_5.m"><style type="text/css">
+      --><title>Assignment_5</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-10"><meta name="DC.source" content="Assignment_5.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,33 +67,192 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 4</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created: median_filter</a></li><li><a href="#4">Functions Created: contraharmonic_filter</a></li><li><a href="#5">Image Imports</a></li><li><a href="#6">Image Blur</a></li></ul></div><h2 id="1">IVP Assignment 4</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
-<span class="comment">% Institute: IIT, Bhubaneswar</span>
-<span class="comment">% Date: 24.10.2020</span>
-<span class="comment">% Degree: Btech</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">IVP Assignment 5</a></li><li><a href="#2">Creating a new environment.</a></li><li><a href="#3">Functions Created: motion_blur</a></li><li><a href="#4">Functions Created: inv_motion_blur</a></li><li><a href="#5">Functions Created: low_pass_gaussian_filter</a></li><li><a href="#6">Functions Created: weiner_filter</a></li><li><a href="#7">Image Imports</a></li><li><a href="#8">Image Resoration</a></li><li><a href="#9">Image Restoration after Synethetically Degrading the Image via a Motion Blur Model</a></li><li><a href="#10">Image Restoration after taking a real Motion Blurred Image</a></li><li><a href="#11">Conclusion</a></li></ul></div><h2 id="1">IVP Assignment 5</h2><pre class="codeinput"><span class="comment">% Name: Chanakya Ajit Ekbote</span>
+<span class="comment">% Institute: Indian Institute of Technology Bhubaneswar</span>
+<span class="comment">% Date: 09.11.2020</span>
+<span class="comment">% Degree: B.Tech</span>
 <span class="comment">% Branch: Electronics and Communication</span>
 <span class="comment">% Roll Number: 17EC01041</span>
 </pre><h2 id="2">Creating a new environment.</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2 id="3">Functions Created: median_filter</h2><h2 id="4">Functions Created: contraharmonic_filter</h2><h2 id="5">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif'</span>);
-</pre><h2 id="6">Image Blur</h2><p>\begin{pmatrix} 1 &amp; 2 &amp; 3\\ a &amp; b &amp; c \end{pmatrix}</p><pre class="codeinput">blur = mat2gray(real(motion_blur(lena, 0.1, 0.1, 2)));
+</pre><h2 id="3">Functions Created: motion_blur</h2><pre class="language-matlab">
+<span class="comment">% Function that creates a blurred image similar to that of a camera shake</span>
+<span class="comment">% or moving objects.</span>
+
+<span class="keyword">function</span> [img] = motion_blur(image, a, b, T)
+    
+    <span class="comment">% Input image.</span>
+    <span class="comment">% a: Rate of motion in x.</span>
+    <span class="comment">% b: Rate of motion in y.</span>
+    <span class="comment">% T: Duration of Exposure.</span>
+    
+    [row, col] = size(image);
+    
+    u = (0:1:(col-1)) + 1e-16;
+    v = (0:1:(row-1)) + 1e-16;
+    
+    <span class="comment">% Creates repetative rows and columns to get the entire matrix.</span>
+    u = repelem(u, row, 1);
+    v = repelem(v', 1, col);
+    
+    angle = u*a + v*b;
+    H = (sin (angle) .* exp(-1i * pi * angle) ./ angle) * T / pi;
+    
+    img = mat2gray(real(ifft2(fft2(image).*H)));
+    
 
 
-<span class="comment">% imshow(mat2gray(real(inv_motion_blur(blur, 0.1, 0.1, 2))));</span>
+</pre><h2 id="4">Functions Created: inv_motion_blur</h2><pre class="language-matlab">
+<span class="comment">% Function that tries to get back the original image using the knowledge</span>
+<span class="comment">% that we have an idea of the degradation function.</span>
 
+<span class="keyword">function</span> [img] = inv_motion_blur(image, a, b, T)
+    
+    <span class="comment">% Input image.</span>
+    <span class="comment">% a: Rate of motion in x.</span>
+    <span class="comment">% b: Rate of motion in y.</span>
+    <span class="comment">% T: Duration of Exposure.</span>
+    
+    [row, col] = size(image);
+    
+    <span class="comment">% Here the shifting the </span>
+    u = (0:1:(col-1)) + 1e-16;
+    v = (0:1:(row-1)) + 1e-16;
+    
+    <span class="comment">% Creates repetative rows and columns to get the entire matrix.</span>
+    u = repelem(u, row, 1);
+    v = repelem(v', 1, col);
+    
+    angle = u*a + v*b;
+    H = (sin (angle) .* exp(-1i * pi * angle) ./ angle) * T / pi;
+    
+    img = mat2gray(real(ifft2(fft2(image) ./ H)));
 
-<span class="comment">% imshow(mat2gray(real(low_pass_gaussian_filter(blur, 100))));</span>
+</pre><h2 id="5">Functions Created: low_pass_gaussian_filter</h2><pre class="language-matlab">
+<span class="comment">% Function that uses a low pass radial filter to remove the blurr in the</span>
+<span class="comment">% original image.</span>
 
-imshow(mat2gray(real(weiner_filter(blur, 0.1, 0.1, 2, 0.002))));
-</pre><img vspace="5" hspace="5" src="Assignment_5_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+<span class="keyword">function</span> [img] = low_pass_gaussian_filter(image, var)
+
+    <span class="comment">% image: We assume that it is a grayscale image.</span>
+    <span class="comment">% var: Gives the variance of the 2D gaussian distribution.</span>
+    
+    dft_image = fftshift(fft2(image));
+    [row, col] = size(dft_image);
+    mid_row = (1 + row) / 2;
+    mid_col = (1 + col) / 2;
+    filter = zeros(size(dft_image));
+    
+    <span class="comment">% Creates the low pass gaussian filter for smoothening.</span>
+    <span class="keyword">for</span> i = 1:row
+        <span class="keyword">for</span> j = 1:col
+            filter(i, j) = exp(-((mid_row - i)^2 + (mid_col-j)^2) / (2 * var^2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    
+    <span class="comment">% ifftshift shifts the fft2d back and then perform the idft. </span>
+    img = mat2gray(real(ifft2(ifftshift(filter .* dft_image))));
+
+</pre><h2 id="6">Functions Created: weiner_filter</h2><pre class="language-matlab">
+<span class="comment">% Function that implements filters an motion blurred image, using a weiner</span>
+<span class="comment">% filter.</span>
+
+<span class="keyword">function</span> [img] = weiner_filter(image, a, b, T, K)
+    
+    <span class="comment">% image: Input image.</span>
+    <span class="comment">% a: Rate of motion in x.</span>
+    <span class="comment">% b: Rate of motion in y.</span>
+    <span class="comment">% T: Duration of Exposure.</span>
+    <span class="comment">% K: Constant used in the Weiner Filter.</span>
+    
+    [row, col] = size(image);
+    
+    u = (0:1:(col-1)) + 1e-16;
+    v = (0:1:(row-1)) + 1e-16;
+    
+    <span class="comment">% Creates repetative rows and columns to get the entire matrix.</span>
+    u = repelem(u, row, 1);
+    v = repelem(v', 1, col);
+    
+    angle = u*a + v*b;
+    H = (sin (angle) .* exp(-1i * pi * angle) ./ angle) * T / pi;
+    
+    weiner_filt = abs(H).^2 ./ ((abs(H).^2 + K).*H);
+    
+    img = mat2gray(real(ifft2(fft2(image) .* weiner_filt)));
+
+</pre><h2 id="7">Image Imports</h2><pre class="codeinput">lena = imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-5\images\lena_gray_256.tif'</span>);
+bruce_springsteen = rgb2gray(imread(<span class="string">'C:\Chanakya\Projects\ivp-assignments\Assignment-5\images\bruce_springsteen.jpg'</span>));
+</pre><h2 id="8">Image Resoration</h2><p>There are three principal ways for estimating the degradation function: 1. observation, 2. experimentation, and 3. mathematical modeling.</p><p>In this experiement we try to restore a motion blurred image via mathematically modelling the motion blur.</p><p>The mathematical model of the motion blur can be observed as follows:</p><p><img src="Assignment_5_eq01555767661709184873.png" alt="$$ g(x,y) = \int_{0}^{T} [x - x_0(t), y - y_0(t)]dt $$" style="width:224px;height:37px;"></p><p>Note that we assume that the image has undergone a movement <img src="Assignment_5_eq14225917717151468940.png" alt="$x_0(t)$" style="width:30px;height:15px;"> and <img src="Assignment_5_eq15787143635367513152.png" alt="$y_0(t)$" style="width:28px;height:15px;"> in the <img src="Assignment_5_eq12428413953531653171.png" alt="$x$" style="width:8px;height:7px;"> and <img src="Assignment_5_eq08830444604280721118.png" alt="$y$" style="width:7px;height:10px;"> direction respectively. Moroever we also assume that the motion was captured within <img src="Assignment_5_eq14047577632175690031.png" alt="$T$" style="width:11px;height:10px;"> which is the duration of exposure of the sensor of the camera.</p><p>In the frequency domain, it can be expressed as:</p><p><img src="Assignment_5_eq03724303827002021029.png" alt="$$ G(u,v) = F(u,v) * H(u,v) $$" style="width:170px;height:15px;"></p><p><img src="Assignment_5_eq06376703125681158911.png" alt="$$ H(u,v) = \frac{T}{\pi(ua + vb)}*sin(\pi(ua + vb)) * e^{-i\pi(ua +&#xA;vb)} $$" style="width:327px;height:34px;"></p><p>Where: <img src="Assignment_5_eq02813299914946962552.png" alt="$x_0(t) = at/T$" style="width:82px;height:15px;"> and <img src="Assignment_5_eq02931203429853064743.png" alt="$y_0(t) = bt/T$" style="width:79px;height:15px;"></p><p>Note that <img src="Assignment_5_eq11412127944106442005.png" alt="$F(u,v)$" style="width:44px;height:15px;"> is the FFT of the original image, <img src="Assignment_5_eq16927915557916580589.png" alt="$H(u,v)$" style="width:46px;height:15px;"> is the degradation function and $ G(u,v) $ is the FFT of the degraded function and <img src="Assignment_5_eq05508344529756732484.png" alt="$a$" style="width:7px;height:7px;"> and <img src="Assignment_5_eq02044268985122151499.png" alt="$b$" style="width:6px;height:11px;"> are the rates of motion in the respective directions.</p><p>Once we know the model, we can theortically get back the image by using an inverse process, that is:</p><p><img src="Assignment_5_eq13897348104262235446.png" alt="$$ F(u,v) = G(u,v) / H(u,v) $$" style="width:163px;height:15px;"></p><p>Since its a motion blur, we can try using a low pass radial filter to reduce the high frequency components and get back the image.</p><p>Another method of restoring the image is by using the Weiner Method where we try to reduce the expected l2 norm between the original image and the estimated original image. The final formula obtained in the frequency domain is:</p><p><img src="Assignment_5_eq10196607279398958499.png" alt="$$ F(u,v) = \frac{|H(u,v)|^2}{|H(u,v)|^2 + K}*\frac{G(u,v)}{H(u,v)} $$" style="width:225px;height:37px;"></p><h2 id="9">Image Restoration after Synethetically Degrading the Image via a Motion Blur Model</h2><pre class="codeinput"><span class="comment">% Calling the motion_blur function (Degrading the image)</span>
+motion_blured_lena = motion_blur(lena, 0.1, 0.1, 2);
+
+<span class="comment">% Calling the inv_motion_blur function</span>
+inverse_filtered_lena = inv_motion_blur(motion_blured_lena, 0.1, 0.1, 2);
+
+<span class="comment">% Calling the low_pass_gaussian_filter function</span>
+radially_filtered_lena = low_pass_gaussian_filter(motion_blured_lena, 50);
+
+<span class="comment">% Calling the weiner_filter function</span>
+weiner_filtered_lena = weiner_filter(motion_blured_lena, 0.1, 0.1, 2, 0.005);
+
+<span class="comment">% Plotting the images</span>
+
+figure(<span class="string">'Name'</span>, <span class="string">'Synthetic Image Restoration'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(2, 2, 1)
+imshow(motion_blured_lena);
+title(<span class="string">'Motion Blurred Image'</span>);
+
+subplot(2, 2, 2)
+imshow(inverse_filtered_lena);
+title(<span class="string">'Inverse Filtered Image'</span>);
+
+subplot(2, 2, 3)
+imshow(radially_filtered_lena);
+title(<span class="string">'Low Pass Filtered Image'</span>);
+
+subplot(2, 2, 4)
+imshow(weiner_filtered_lena);
+title(<span class="string">'Weiner Filtered Image'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_5_01.png" alt=""> <h2 id="10">Image Restoration after taking a real Motion Blurred Image</h2><pre class="codeinput"><span class="comment">% Calling the inv_motion_blur function</span>
+inverse_filtered_bruce = inv_motion_blur(bruce_springsteen, 0.1, 0.1, 2);
+
+<span class="comment">% Calling the low_pass_gaussian_filter function</span>
+radially_filtered_bruce = low_pass_gaussian_filter(bruce_springsteen, 50);
+
+<span class="comment">% Calling the weiner_filter function</span>
+weiner_filtered_bruce = weiner_filter(bruce_springsteen, 0.1, 0.1, 2, 0.005);
+
+<span class="comment">% Plotting the images</span>
+
+figure(<span class="string">'Name'</span>, <span class="string">'Synthetic Image Restoration'</span>, <span class="string">'units'</span>, <span class="keyword">...</span>
+    <span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, [0 0 1 1]);
+
+subplot(2, 2, 1)
+imshow(bruce_springsteen);
+title(<span class="string">'Motion Blurred Image'</span>);
+
+subplot(2, 2, 2)
+imshow(inverse_filtered_bruce);
+title(<span class="string">'Inverse Filtered Image'</span>);
+
+subplot(2, 2, 3)
+imshow(radially_filtered_bruce);
+title(<span class="string">'Low Pass Filtered Image'</span>);
+
+subplot(2, 2, 4)
+imshow(weiner_filtered_bruce);
+title(<span class="string">'Weiner Filtered Image'</span>);
+</pre><img vspace="5" hspace="5" src="Assignment_5_02.png" alt=""> <h2 id="11">Conclusion</h2><p>From this experiment we can see that if we can mathematically estimate the degradation function we can get back the original image. However, one major caveat is that the model that has been developed has to be good enough. Else the inverse filtering process does not work very well. In addition to that we also observe that even if the degradation function has been modelled well, there is no guarentee that the inverse filteration process works well. For an inverse filteration process to work well, the relationship between the degraded function and its inverse has to be bijective which is not usually the case. We also observe that using a low pass filter does not work very well. The Weiner Filter works well but a major problem is estimating the rates of motion a, b the exposure time T as well as the Wiener Constant k. If the constants are not chosen properly, then the image is not restored well.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% IVP Assignment 4
+%% IVP Assignment 5
 
 % Name: Chanakya Ajit Ekbote
-% Institute: IIT, Bhubaneswar
-% Date: 24.10.2020
-% Degree: Btech
+% Institute: Indian Institute of Technology Bhubaneswar
+% Date: 09.11.2020
+% Degree: B.Tech
 % Branch: Electronics and Communication
 % Roll Number: 17EC01041
 
@@ -103,33 +262,148 @@ clc;
 clear all;
 close all;
 
-%% Functions Created: median_filter
+%% Functions Created: motion_blur
+% <include>motion_blur.m</include>
 
+%% Functions Created: inv_motion_blur
+% <include>inv_motion_blur.m</include>
 
-%% Functions Created: contraharmonic_filter
+%% Functions Created: low_pass_gaussian_filter
+% <include>low_pass_gaussian_filter.m</include>
+
+%% Functions Created: weiner_filter
+% <include>weiner_filter.m</include>
 
 %% Image Imports
 
-lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-3\images\lena_gray_256.tif');
+lena = imread('C:\Chanakya\Projects\ivp-assignments\Assignment-5\images\lena_gray_256.tif');
+bruce_springsteen = rgb2gray(imread('C:\Chanakya\Projects\ivp-assignments\Assignment-5\images\bruce_springsteen.jpg'));
+
+%% Image Resoration
+% There are three principal ways for estimating the degradation function: 
+% 1. observation, 2. experimentation, and 3. mathematical modeling.
+%
+% In this experiement we try to restore a motion blurred image via
+% mathematically modelling the motion blur. 
+%
+% The mathematical model of the motion blur can be observed as follows:
+% 
+% $$ g(x,y) = \int_{0}^{T} [x - x_0(t), y - y_0(t)]dt $$
+% 
+% Note that we assume that the image has undergone a movement $x_0(t)$ and 
+% $y_0(t)$ in the $x$ and $y$ direction respectively. Moroever we also
+% assume that the motion was captured within $T$ which is the duration of
+% exposure of the sensor of the camera.
+%
+% In the frequency domain, it can be expressed as: 
+%
+% $$ G(u,v) = F(u,v) * H(u,v) $$
+% 
+% $$ H(u,v) = \frac{T}{\pi(ua + vb)}*sin(\pi(ua + vb)) * e^{-i\pi(ua +
+% vb)} $$
+%
+% Where: $x_0(t) = at/T$ and $y_0(t) = bt/T$
+%
+% Note that $F(u,v)$ is the FFT of the original image, $H(u,v)$ is the
+% degradation function and $ G(u,v) $ is the FFT of the degraded function
+% and $a$ and $b$ are the rates of motion in the respective directions.
+%
+% Once we know the model, we can theortically get back the image by using
+% an inverse process, that is: 
+%
+% $$ F(u,v) = G(u,v) / H(u,v) $$
+%
+% Since its a motion blur, we can try using a low pass radial filter to
+% reduce the high frequency components and get back the image.
+%
+% Another method of restoring the image is by using the Weiner Method where
+% we try to reduce the expected l2 norm between the original image and the
+% estimated original image. The final formula obtained in the frequency
+% domain is:
+%
+% $$ F(u,v) = \frac{|H(u,v)|^2}{|H(u,v)|^2 + K}*\frac{G(u,v)}{H(u,v)} $$
 
 
-%% Image Blur
-% \begin{pmatrix}
-% 1 & 2 & 3\\
-% a & b & c
-% \end{pmatrix}
+%% Image Restoration after Synethetically Degrading the Image via a Motion Blur Model
 
-blur = mat2gray(real(motion_blur(lena, 0.1, 0.1, 2)));
+% Calling the motion_blur function (Degrading the image)
+motion_blured_lena = motion_blur(lena, 0.1, 0.1, 2);
 
+% Calling the inv_motion_blur function
+inverse_filtered_lena = inv_motion_blur(motion_blured_lena, 0.1, 0.1, 2);
 
-% imshow(mat2gray(real(inv_motion_blur(blur, 0.1, 0.1, 2))));
+% Calling the low_pass_gaussian_filter function
+radially_filtered_lena = low_pass_gaussian_filter(motion_blured_lena, 50);
 
+% Calling the weiner_filter function
+weiner_filtered_lena = weiner_filter(motion_blured_lena, 0.1, 0.1, 2, 0.005);
 
-% imshow(mat2gray(real(low_pass_gaussian_filter(blur, 100))));
+% Plotting the images
 
-imshow(mat2gray(real(weiner_filter(blur, 0.1, 0.1, 2, 0.002))));
-%% 
+figure('Name', 'Synthetic Image Restoration', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
 
+subplot(2, 2, 1)
+imshow(motion_blured_lena);
+title('Motion Blurred Image');
 
+subplot(2, 2, 2)
+imshow(inverse_filtered_lena);
+title('Inverse Filtered Image');
+
+subplot(2, 2, 3)
+imshow(radially_filtered_lena);
+title('Low Pass Filtered Image');
+
+subplot(2, 2, 4)
+imshow(weiner_filtered_lena);
+title('Weiner Filtered Image');
+
+%% Image Restoration after taking a real Motion Blurred Image 
+
+% Calling the inv_motion_blur function
+inverse_filtered_bruce = inv_motion_blur(bruce_springsteen, 0.1, 0.1, 2);
+
+% Calling the low_pass_gaussian_filter function
+radially_filtered_bruce = low_pass_gaussian_filter(bruce_springsteen, 50);
+
+% Calling the weiner_filter function
+weiner_filtered_bruce = weiner_filter(bruce_springsteen, 0.1, 0.1, 2, 0.005);
+
+% Plotting the images
+
+figure('Name', 'Synthetic Image Restoration', 'units', ... 
+    'normalized','outerposition', [0 0 1 1]);
+
+subplot(2, 2, 1)
+imshow(bruce_springsteen);
+title('Motion Blurred Image');
+
+subplot(2, 2, 2)
+imshow(inverse_filtered_bruce);
+title('Inverse Filtered Image');
+
+subplot(2, 2, 3)
+imshow(radially_filtered_bruce);
+title('Low Pass Filtered Image');
+
+subplot(2, 2, 4)
+imshow(weiner_filtered_bruce);
+title('Weiner Filtered Image');
+
+%% Conclusion
+% From this experiment we can see that if we can mathematically estimate
+% the degradation function we can get back the original image. However, one
+% major caveat is that the model that has been developed has to be good
+% enough. Else the inverse filtering process does not work very well. In 
+% addition to that we also observe that even if the degradation function
+% has been modelled well, there is no guarentee that the inverse
+% filteration process works well. For an inverse filteration process to
+% work well, the relationship between the degraded function and its inverse
+% has to be bijective which is not usually the case. We also observe that
+% using a low pass filter does not work very well. The Weiner Filter works
+% well but a major problem is estimating the rates of motion a, b the
+% exposure time T as well as the Wiener Constant k. If the constants are not
+% chosen properly, then the image is not restored well.
 ##### SOURCE END #####
 --></body></html>

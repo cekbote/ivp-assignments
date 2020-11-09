@@ -11,8 +11,8 @@ function [img] = weiner_filter(image, a, b, T, K)
     
     [row, col] = size(image);
     
-    u = (0:1:(row-1)) + 1e-16;
-    v = (0:1:(col-1)) + 1e-16;
+    u = (0:1:(col-1)) + 1e-16;
+    v = (0:1:(row-1)) + 1e-16;
     
     % Creates repetative rows and columns to get the entire matrix.
     u = repelem(u, row, 1);
